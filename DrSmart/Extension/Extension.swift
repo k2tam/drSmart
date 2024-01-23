@@ -8,11 +8,6 @@
 import Foundation
 import SwiftUI
 
-
-
-
-
-
 struct DrSmartExtension {
     static func boldKeywordsText(originalText: String, keywords: [String]) -> Text {
         var resultText = Text("")

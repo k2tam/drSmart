@@ -25,6 +25,7 @@ struct CircleCheckedLineView: View {
             VStack(alignment: .leading, spacing: 4) {
                 Text(text)
                     .font(.system(size: 16, weight: .medium))
+                    .foregroundColor(Color.hiPrimaryText)
                 
                 if let subText {
                     Text(subText)

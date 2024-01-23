@@ -38,10 +38,12 @@ struct RecommendView: View {
                     
                     DrSmartExtension.boldKeywordsText(originalText: descText, keywords: ["Tiếp tục báo lỗi."])
                         .font(.system(size: 16))
+                        .multilineTextAlignment(.leading)
                 }
                 .frame(maxWidth: .infinity)
                 
             }
+            .foregroundColor(Color.hiPrimaryText)
             .padding(.vertical, 12)
             .frame(maxWidth: .infinity)
             .padding(.horizontal, 16)
@@ -55,7 +57,6 @@ struct RecommendView: View {
                         withAnimation(.spring()) {
                             if value.translation.width < 0 {
                                 self.offset = CGSize(width: value.translation.width, height: 0.0)
-                                print(offset.width)
                             }
 
                         }

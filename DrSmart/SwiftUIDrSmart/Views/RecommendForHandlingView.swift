@@ -35,6 +35,7 @@ struct RecommendForHandlingView: View {
                     
                     Text(title)
                         .font(.system(size: 16))
+                        .foregroundColor(Color.hiPrimaryText)
                         .lineLimit(3)
                         .multilineTextAlignment(.leading)
                     
@@ -88,7 +89,8 @@ struct RecommendForHandlingView: View {
                     Button(action: {
                         
                     }, label: {
-                        HiButton(type: .secondary, btnText: btnText) {
+                        
+                        HiSecondaryButton(btnText: btnText) {
                             btnAction()
                         }
                         .frame(height: 40)

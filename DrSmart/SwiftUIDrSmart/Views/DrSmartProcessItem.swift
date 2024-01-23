@@ -23,7 +23,7 @@ struct DrSmartProcessItem: View {
         ZStack {
             if status == .waiting {
                 LottieView(name: "Scan_Small", loopMode: .loop)
-                    .frame(width: 78, height: 78)
+                    .frame(width: 64, height: 64)
                
             }else {
                 Circle()
@@ -71,7 +71,7 @@ struct DrSmartProcessItem: View {
 
 struct DrSmartProcessItem_Previews: PreviewProvider {
     static var previews: some View {
-        DrSmartProcessItem(status: .active ,activeImg: "ic_linear_global", inActiveImg: "ic_linear_disable_global")
+        DrSmartProcessItem(status: .waiting ,activeImg: "ic_linear_global", inActiveImg: "ic_linear_disable_global")
             .previewLayout(.sizeThatFits)
     }
 }

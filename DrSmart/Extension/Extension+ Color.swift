@@ -47,6 +47,6 @@ public extension Color {
     static let strokePrimary = Color(red: 209/255, green: 209/255, blue: 209/255)
     static let strokeLight = Color(red: 231/255, green: 231/255, blue: 231/255)
     
-    
+    static let hiPrimaryText = Color(red: 61/255, green: 61/255, blue: 61/255)
     
 }

@@ -19,6 +19,7 @@ struct DrSmartBlock<Content:View>: View {
         VStack(alignment: .leading, spacing: 16) {
             Text(blockTitle)
                 .font(.system(size: 18,weight: .medium))
+                .foregroundColor(Color.hiPrimaryText)
                 
            content
            

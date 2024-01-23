@@ -30,6 +30,14 @@
 		0508D5A82B5BB2C700DE4427 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = 0508D5A72B5BB2C700DE4427 /* Lottie */; };
 		054DDD1B2B5F5168005B9D95 /* Test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 054DDD1A2B5F5168005B9D95 /* Test.swift */; };
 		054DDD1D2B5F537C005B9D95 /* Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 054DDD1C2B5F537C005B9D95 /* Extension.swift */; };
+		054DDD432B5FA591005B9D95 /* HiNavBarPreferenceKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 054DDD402B5FA591005B9D95 /* HiNavBarPreferenceKeys.swift */; };
+		054DDD442B5FA591005B9D95 /* HiNavigationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 054DDD412B5FA591005B9D95 /* HiNavigationView.swift */; };
+		054DDD472B5FA5DD005B9D95 /* Extension+ View.swift in Sources */ = {isa = PBXBuildFile; fileRef = 054DDD462B5FA5DD005B9D95 /* Extension+ View.swift */; };
+		054DDD492B5FB41E005B9D95 /* HiFooterOneButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 054DDD482B5FB41E005B9D95 /* HiFooterOneButton.swift */; };
+		054DDD4B2B5FB4E9005B9D95 /* HiFooterTwoButtons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 054DDD4A2B5FB4E9005B9D95 /* HiFooterTwoButtons.swift */; };
+		054DDD4D2B5FF3FA005B9D95 /* TextsProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 054DDD4C2B5FF3FA005B9D95 /* TextsProgressView.swift */; };
+		054DDD4F2B6000A8005B9D95 /* ProcessView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 054DDD4E2B6000A8005B9D95 /* ProcessView.swift */; };
+		054DDD512B6020E9005B9D95 /* TestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 054DDD502B6020E9005B9D95 /* TestView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -56,6 +64,14 @@
 		0508D59E2B5A6A2900DE4427 /* TestVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestVC.swift; sourceTree = "<group>"; };
 		054DDD1A2B5F5168005B9D95 /* Test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Test.swift; sourceTree = "<group>"; };
 		054DDD1C2B5F537C005B9D95 /* Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extension.swift; sourceTree = "<group>"; };
+		054DDD402B5FA591005B9D95 /* HiNavBarPreferenceKeys.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HiNavBarPreferenceKeys.swift; sourceTree = "<group>"; };
+		054DDD412B5FA591005B9D95 /* HiNavigationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HiNavigationView.swift; sourceTree = "<group>"; };
+		054DDD462B5FA5DD005B9D95 /* Extension+ View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension+ View.swift"; sourceTree = "<group>"; };
+		054DDD482B5FB41E005B9D95 /* HiFooterOneButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HiFooterOneButton.swift; sourceTree = "<group>"; };
+		054DDD4A2B5FB4E9005B9D95 /* HiFooterTwoButtons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HiFooterTwoButtons.swift; sourceTree = "<group>"; };
+		054DDD4C2B5FF3FA005B9D95 /* TextsProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextsProgressView.swift; sourceTree = "<group>"; };
+		054DDD4E2B6000A8005B9D95 /* ProcessView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProcessView.swift; sourceTree = "<group>"; };
+		054DDD502B6020E9005B9D95 /* TestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -102,6 +118,7 @@
 				0508D53C2B5A105900DE4427 /* LaunchScreen.storyboard */,
 				0508D53F2B5A105900DE4427 /* Info.plist */,
 				054DDD1A2B5F5168005B9D95 /* Test.swift */,
+				054DDD502B6020E9005B9D95 /* TestView.swift */,
 			);
 			path = DrSmart;
 			sourceTree = "<group>";
@@ -141,6 +158,8 @@
 				0508D5522B5A150300DE4427 /* RecommendForHandlingView.swift */,
 				0508D5532B5A150300DE4427 /* DrSmartBlock.swift */,
 				0508D5542B5A150300DE4427 /* RecommendView.swift */,
+				054DDD4C2B5FF3FA005B9D95 /* TextsProgressView.swift */,
+				054DDD4E2B6000A8005B9D95 /* ProcessView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -184,8 +203,29 @@
 		054DDD3D2B5FA556005B9D95 /* Theme */ = {
 			isa = PBXGroup;
 			children = (
+				054DDD452B5FA5CC005B9D95 /* Extension */,
+				054DDD3E2B5FA591005B9D95 /* Navigation */,
 			);
 			path = Theme;
+			sourceTree = "<group>";
+		};
+		054DDD3E2B5FA591005B9D95 /* Navigation */ = {
+			isa = PBXGroup;
+			children = (
+				054DDD402B5FA591005B9D95 /* HiNavBarPreferenceKeys.swift */,
+				054DDD412B5FA591005B9D95 /* HiNavigationView.swift */,
+				054DDD482B5FB41E005B9D95 /* HiFooterOneButton.swift */,
+				054DDD4A2B5FB4E9005B9D95 /* HiFooterTwoButtons.swift */,
+			);
+			path = Navigation;
+			sourceTree = "<group>";
+		};
+		054DDD452B5FA5CC005B9D95 /* Extension */ = {
+			isa = PBXGroup;
+			children = (
+				054DDD462B5FA5DD005B9D95 /* Extension+ View.swift */,
+			);
+			path = Extension;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -269,21 +309,29 @@
 			files = (
 				0508D59F2B5A6A2900DE4427 /* TestVC.swift in Sources */,
 				0508D5882B5A1DA900DE4427 /* HiButton.swift in Sources */,
+				054DDD4D2B5FF3FA005B9D95 /* TextsProgressView.swift in Sources */,
+				054DDD492B5FB41E005B9D95 /* HiFooterOneButton.swift in Sources */,
+				054DDD4F2B6000A8005B9D95 /* ProcessView.swift in Sources */,
 				0508D5962B5A322400DE4427 /* LottieView.swift in Sources */,
 				0508D5582B5A150300DE4427 /* CircleCheckedLineView.swift in Sources */,
 				054DDD1B2B5F5168005B9D95 /* Test.swift in Sources */,
 				0508D5552B5A150300DE4427 /* DrSmartViewModel.swift in Sources */,
+				054DDD4B2B5FB4E9005B9D95 /* HiFooterTwoButtons.swift in Sources */,
+				054DDD472B5FA5DD005B9D95 /* Extension+ View.swift in Sources */,
 				0508D5592B5A150300DE4427 /* DrSmartProcessItem.swift in Sources */,
 				0508D5562B5A150300DE4427 /* DrSmartModel.swift in Sources */,
 				0508D5462B5A121B00DE4427 /* DrSmartVC.swift in Sources */,
+				054DDD442B5FA591005B9D95 /* HiNavigationView.swift in Sources */,
 				054DDD1D2B5F537C005B9D95 /* Extension.swift in Sources */,
 				0508D5572B5A150300DE4427 /* DrSmartScreen.swift in Sources */,
 				0508D55A2B5A150300DE4427 /* RecommendForHandlingView.swift in Sources */,
+				054DDD432B5FA591005B9D95 /* HiNavBarPreferenceKeys.swift in Sources */,
 				0508D5682B5A16D900DE4427 /* Extension+ Color.swift in Sources */,
 				0508D5322B5A105700DE4427 /* AppDelegate.swift in Sources */,
 				0508D55B2B5A150300DE4427 /* DrSmartBlock.swift in Sources */,
 				0508D5342B5A105700DE4427 /* SceneDelegate.swift in Sources */,
 				0508D5862B5A1D9200DE4427 /* HiImage.swift in Sources */,
+				054DDD512B6020E9005B9D95 /* TestView.swift in Sources */,
 				0508D55C2B5A150300DE4427 /* RecommendView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

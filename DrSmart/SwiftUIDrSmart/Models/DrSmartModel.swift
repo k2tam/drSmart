@@ -56,10 +56,15 @@ enum eRecommendForHandlingType {
 }
 
 struct RecommendForHandling: Hashable {
+    static func == (lhs: RecommendForHandling, rhs: RecommendForHandling) -> Bool {
+       return  lhs.title == rhs.title
+    }
+    
     let type: eRecommendForHandlingType
     let title: String
     let descText: String?
     let btnText: String?
+    let actionModel: ActionModel?
     
     func hash(into hasher: inout Hasher) {
         hasher.combine(title)

@@ -8,15 +8,23 @@
 import UIKit
 import SwiftUI
 
+struct ActionModel {
+    let actionName: String
+}
+
+
+
 class DrSmartVC: UIViewController {
-
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = .systemBackground
         
-        let vc = UIHostingController(rootView: DrSmartScreen())
+        var rootView = DrSmartScreen()
+        rootView.delegate = self
+        let vc = UIHostingController(rootView: rootView)
         let drSmartSwiftView = vc.view!
+        
         drSmartSwiftView.translatesAutoresizingMaskIntoConstraints = false
         
         addChild(vc)
@@ -33,10 +41,21 @@ class DrSmartVC: UIViewController {
         vc.didMove(toParent: self)
 
     }
+}
+
+extension DrSmartVC: DrSmartScreenDelegate {
+    func drSmartActionTracking(actionType: eDrSmartAction) {
+        switch actionType {
+        case .recommendForHandling(let actionModel):
+            print(actionModel.actionName)
+        case .footerAction(let actionModel):
+            print(actionModel.actionName)
+        case .recommendTip(let actionModel):
+            print(actionModel.actionName)
+        }
+    }
     
-
     
-
-  
-
+    
+    
 }
