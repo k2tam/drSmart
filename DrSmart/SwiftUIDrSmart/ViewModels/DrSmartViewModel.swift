@@ -20,13 +20,13 @@ class DrSmartViewModel: ObservableObject {
     private var cancelables = Set<AnyCancellable>()
     
     @Published var processArr = [
-        Process(status: .active,activeIcon: "ic_linear_devices"),
-        Process(status: .loading,activeIcon: "ic_linear_router", inActiveIcon: "ic_linear_inActive_router"),
+        Process(status: .loading,activeIcon: "ic_linear_devices"),
+        Process(status: .waiting,activeIcon: "ic_linear_router", inActiveIcon: "ic_linear_inActive_router"),
         Process(status: .inActive,activeIcon: "ic_linear_global", inActiveIcon: "ic_linear_inActive_global")
     ]
     
-//    @Published var recommend: Recommend? = Recommend(type: .error, title: "Phát hiện lỗi", body: "Hệ thống có thể sẽ mất vài phút để khắc phục")
-    @Published var recommend: Recommend? = nil
+    @Published var recommend: Recommend? = Recommend(type: .error, title: "Phát hiện lỗi", body: "Hệ thống có thể sẽ mất vài phút để khắc phục")
+//    @Published var recommend: Recommend? = nil
 
     
     @Published var detectedAndSolvedArr: [DetectedAndSolved] = []
@@ -67,7 +67,7 @@ class DrSmartViewModel: ObservableObject {
                     self.cantHandleErrorArr = self.sampleCantHandleErrorArr
                     self.notDetectErroArr = self.sampleNotDetectErroItem
                 }else {
-                    //Resent content
+                    //Reset content
                     self.detectedAndSolvedArr = []
                     self.cantHandleErrorArr = []
                     self.notDetectErroArr = []

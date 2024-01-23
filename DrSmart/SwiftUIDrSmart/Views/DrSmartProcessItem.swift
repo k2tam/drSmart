@@ -21,14 +21,14 @@ struct DrSmartProcessItem: View {
     
     var body: some View {
         ZStack {
-            if status == .loading {
+            if status == .waiting {
                 LottieView(name: "Scan_Small", loopMode: .loop)
                     .frame(width: 78, height: 78)
                
             }else {
                 Circle()
                     .frame(width: 64, height: 64)
-                    .foregroundColor(Color(hex: "#E5EAFF",alpha: 0.6))
+                    .foregroundColor(Color(hex: "#E5EAFF",alpha: 0.4))
             }
            
             
@@ -57,12 +57,14 @@ struct DrSmartProcessItem: View {
     
     private func setIconProcess(_ status: eDrSmartProcessStatus) -> String {
         switch status {
-        case .loading:
+        case .waiting:
             return inActiveImg ?? ""
         case .active:
             return activeImg
         case .inActive:
             return inActiveImg ?? ""
+        case .loading:
+            return activeImg 
         }
     }
 }

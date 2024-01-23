@@ -28,6 +28,8 @@
 		0508D59F2B5A6A2900DE4427 /* TestVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0508D59E2B5A6A2900DE4427 /* TestVC.swift */; };
 		0508D5A52B5A861F00DE4427 /* SwiftUIBackports in Frameworks */ = {isa = PBXBuildFile; productRef = 0508D5A42B5A861F00DE4427 /* SwiftUIBackports */; };
 		0508D5A82B5BB2C700DE4427 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = 0508D5A72B5BB2C700DE4427 /* Lottie */; };
+		054DDD1B2B5F5168005B9D95 /* Test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 054DDD1A2B5F5168005B9D95 /* Test.swift */; };
+		054DDD1D2B5F537C005B9D95 /* Extension+ Text.swift in Sources */ = {isa = PBXBuildFile; fileRef = 054DDD1C2B5F537C005B9D95 /* Extension+ Text.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -52,6 +54,8 @@
 		0508D5902B5A2A1400DE4427 /* Scan_Small.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Scan_Small.json; sourceTree = "<group>"; };
 		0508D5952B5A322400DE4427 /* LottieView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LottieView.swift; sourceTree = "<group>"; };
 		0508D59E2B5A6A2900DE4427 /* TestVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestVC.swift; sourceTree = "<group>"; };
+		054DDD1A2B5F5168005B9D95 /* Test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Test.swift; sourceTree = "<group>"; };
+		054DDD1C2B5F537C005B9D95 /* Extension+ Text.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension+ Text.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -72,7 +76,6 @@
 			children = (
 				0508D5302B5A105700DE4427 /* DrSmart */,
 				0508D52F2B5A105700DE4427 /* Products */,
-				058BC2FD96CF53A7A0B964E6 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -97,6 +100,7 @@
 				0508D53A2B5A105900DE4427 /* Assets.xcassets */,
 				0508D53C2B5A105900DE4427 /* LaunchScreen.storyboard */,
 				0508D53F2B5A105900DE4427 /* Info.plist */,
+				054DDD1A2B5F5168005B9D95 /* Test.swift */,
 			);
 			path = DrSmart;
 			sourceTree = "<group>";
@@ -146,6 +150,7 @@
 				0508D5872B5A1DA900DE4427 /* HiButton.swift */,
 				0508D5852B5A1D9200DE4427 /* HiImage.swift */,
 				0508D5672B5A16D900DE4427 /* Extension+ Color.swift */,
+				054DDD1C2B5F537C005B9D95 /* Extension+ Text.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -173,13 +178,6 @@
 				0508D5952B5A322400DE4427 /* LottieView.swift */,
 			);
 			path = Components;
-			sourceTree = "<group>";
-		};
-		058BC2FD96CF53A7A0B964E6 /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Pods;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -265,10 +263,12 @@
 				0508D5882B5A1DA900DE4427 /* HiButton.swift in Sources */,
 				0508D5962B5A322400DE4427 /* LottieView.swift in Sources */,
 				0508D5582B5A150300DE4427 /* CircleCheckedLineView.swift in Sources */,
+				054DDD1B2B5F5168005B9D95 /* Test.swift in Sources */,
 				0508D5552B5A150300DE4427 /* DrSmartViewModel.swift in Sources */,
 				0508D5592B5A150300DE4427 /* DrSmartProcessItem.swift in Sources */,
 				0508D5562B5A150300DE4427 /* DrSmartModel.swift in Sources */,
 				0508D5462B5A121B00DE4427 /* DrSmartVC.swift in Sources */,
+				054DDD1D2B5F537C005B9D95 /* Extension+ Text.swift in Sources */,
 				0508D5572B5A150300DE4427 /* DrSmartScreen.swift in Sources */,
 				0508D55A2B5A150300DE4427 /* UnhandledErrorView.swift in Sources */,
 				0508D5682B5A16D900DE4427 /* Extension+ Color.swift in Sources */,

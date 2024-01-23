@@ -21,10 +21,17 @@ struct DrSmartScreen: View {
             ScrollView(showsIndicators: false) {
                 VStack(spacing: 24) {
                     Button {
-                        self.startCheckProgress()
+                        self.startCheckProgressStopAt(percentage: 0.8, duration: 5)
                         
                     } label: {
                         Text("Next Step")
+                    }
+                    
+                    Button {
+                        self.resumeProgress()
+                        
+                    } label: {
+                        Text("Resume")
                     }
                     
                     VStack(spacing: 24) {
@@ -48,9 +55,9 @@ struct DrSmartScreen: View {
                         }
                     }
                     
-                    //MARK: - Unhandled Error Block
+                    //MARK: - Recommends for handling block
                     if !vm.cantHandleErrorArr.isEmpty {
-                        DrSmartBlock(blockTitle: "Lỗi chưa thể xử lý") {
+                        DrSmartBlock(blockTitle: "Gợi ý xử lý") {
                             VStack(spacing: 8) {
                                 ForEach(vm.cantHandleErrorArr, id: \.self) { item in
                                     UnhandledErrorView(title: item.title, descText: item.descText, btnText: item.btnText) {
@@ -60,7 +67,7 @@ struct DrSmartScreen: View {
                         }
                     }
                     
-                    //MARK: - Not detect rrror Block
+                    //MARK: - Not detect errror Block
                     if !vm.notDetectErroArr.isEmpty {
                         DrSmartBlock(blockTitle: "Không phát hiện lỗi!") {
                             VStack(spacing: 8){
@@ -143,7 +150,7 @@ struct DrSmartScreen: View {
 
 
 
-    func startCheckProgress() {
+    private func startCheckProgress() {
         //Reset process
         progress = 0.0
         vm.isCheckingCompleted = false
@@ -165,11 +172,79 @@ struct DrSmartScreen: View {
                    }
                }
                
-               DispatchQueue.main.async {
+               DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){
                    vm.isCheckingCompleted = true
+                   timer?.invalidate()
                }
            }
     }
+    
+    private func startCheckProgressStopAt(percentage: Double, duration: Int) {
+        
+        //Reset process
+        progress = 0.0
+        vm.isCheckingCompleted = false
+        
+        let updateInterval = 0.1
+        let totalUpdates = Double(duration) / updateInterval
+        
+        let dispatchQueue = DispatchQueue(label: "progressQueue", qos: .userInteractive)
+           
+           // Start updating the progress using DispatchQueue
+           dispatchQueue.async {
+               for _ in 0..<Int(totalUpdates) {
+                   Thread.sleep(forTimeInterval: updateInterval)
+                   
+                   DispatchQueue.main.async {
+                       withAnimation {
+                           progress += percentage / totalUpdates
+                       }
+                   }
+               }
+               
+             
+           }
+    }
+    
+    private func resumeProgress() {
+        if progress < 1.0 {
+            let durationToComplete = 0.5
+            let progressUncompleted = 1.0 - progress
+            
+            let updateInterval = 0.1
+            let totalUpdates = Double(durationToComplete) / updateInterval
+            
+            let dispatchQueue = DispatchQueue(label: "progressQueue", qos: .userInteractive)
+            
+            dispatchQueue.async {
+                for _ in 0..<Int(totalUpdates) {
+                    Thread.sleep(forTimeInterval: updateInterval)
+                    
+                    DispatchQueue.main.async {
+                        withAnimation {
+                            progress += progressUncompleted / totalUpdates
+                        }
+                    }
+                }
+                
+//                DispatchQueue.main.async {
+//                    vm.isCheckingCompleted = true
+//                    timer?.invalidate()
+//                }
+                
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){
+                    vm.isCheckingCompleted = true
+                    timer?.invalidate()
+                }
+                
+            }
+            
+
+        }
+    }
+    
+    
+    
 
     
 }

@@ -17,8 +17,10 @@ struct DrSmartModel {
     var processes: [Process]
 }
 
+
 enum eDrSmartProcessStatus: String {
     case loading
+    case waiting
     case active
     case inActive
 }

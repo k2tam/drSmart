@@ -31,7 +31,7 @@ struct RecommendView: View {
                 Text(title)
                     .font(.system(size: 16, weight: .semibold))
                 
-                Text(descText)
+                DrSmartExtension.boldKeywordsText(originalText: descText, keywords: ["Tiếp tục báo lỗi."])
                     .font(.system(size: 16))
             }
             .frame(maxWidth: .infinity)
@@ -48,5 +48,5 @@ struct RecommendView: View {
 }
 
 #Preview {
-    RecommendView(type: .info, title: "Lưu ý", descText: "Nếu chưa thể xử lý theo gợi ý, Quý khách vui lòng nhấn Tiếp tục báo lỗi")
+    RecommendView(type: .info, title: "Lưu ý", descText: "Nếu chưa thể xử lý theo gợi ý, Quý khách vui lòng nhấn Tiếp tục báo lỗi.")
 }
