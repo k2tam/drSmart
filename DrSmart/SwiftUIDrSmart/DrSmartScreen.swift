@@ -10,9 +10,11 @@ import SwiftUIBackports
 import Lottie
 
 struct DrSmartScreen: View {
+    let oneThirdProgress: Double = 1.0 / 3.0
     @Backport.StateObject var vm =  DrSmartViewModel()
     @State private var timer: Timer?
     @State private var progress: CGFloat = 0.0
+    @State private var isShowRecommendTip: Bool = true
     
     var body: some View {
         ZStack(alignment: .bottom) {
@@ -20,20 +22,27 @@ struct DrSmartScreen: View {
             
             ScrollView(showsIndicators: false) {
                 VStack(spacing: 24) {
-                    Button {
-                        self.startCheckProgressStopAt(percentage: 0.8, duration: 5)
+                    HStack {
+                        Button {
+                            self.startCheckProgressStopAt(percentage: 0.8, duration: 8)
+    //                        self.startCheckProgress()
+                            
+                        } label: {
+                            Text("Next Step")
+                        }
                         
-                    } label: {
-                        Text("Next Step")
+                        Button {
+                            self.resumeProgress(duration: 5, completion: {
+                                finishChecking()
+
+                            })
+                            
+                        } label: {
+                            Text("Resume")
+                        }
+
                     }
-                    
-                    Button {
-                        self.resumeProgress()
-                        
-                    } label: {
-                        Text("Resume")
-                    }
-                    
+                                        
                     VStack(spacing: 24) {
                         ProcessView
 
@@ -56,11 +65,12 @@ struct DrSmartScreen: View {
                     }
                     
                     //MARK: - Recommends for handling block
-                    if !vm.cantHandleErrorArr.isEmpty {
+                    if !vm.recommendsForHandlingArr.isEmpty {
                         DrSmartBlock(blockTitle: "Gợi ý xử lý") {
                             VStack(spacing: 8) {
-                                ForEach(vm.cantHandleErrorArr, id: \.self) { item in
-                                    UnhandledErrorView(title: item.title, descText: item.descText, btnText: item.btnText) {
+                                ForEach(vm.recommendsForHandlingArr, id: \.self) { item in
+                                    RecommendForHandlingView(type: item.type, title: item.title, descText: item.descText, btnText: item.btnText){
+                                        
                                     }
                                 }
                             }
@@ -69,18 +79,14 @@ struct DrSmartScreen: View {
                     
                     //MARK: - Not detect errror Block
                     if !vm.notDetectErroArr.isEmpty {
-                        DrSmartBlock(blockTitle: "Không phát hiện lỗi!") {
+                        DrSmartBlock(blockTitle: "Không phát hiện lỗi") {
                             VStack(spacing: 8){
                                 ForEach(vm.notDetectErroArr, id: \.self) { item in
                                     CircleCheckedLineView(text: item.title, subText: item.body)
                                 }
                             }
                         }
-                    }
-                    
-                    
-                    
-                    
+                    }   
                 }
                 .padding(.all, 16)
                 .padding(.bottom, 400)
@@ -89,10 +95,12 @@ struct DrSmartScreen: View {
             
             
             
-            if let recommend = vm.recommend {
-                RecommendView(type: recommend.type, title: recommend.title, descText: recommend.body)
-                    .padding(.bottom, 16)
-                    .padding(.horizontal, 16)
+            if let recommend = vm.recommend  {
+                if self.isShowRecommendTip {
+                    RecommendView(isShow: $isShowRecommendTip, type: recommend.type, title: recommend.title, descText: recommend.body)
+                        .padding(.bottom, 16)
+                        .padding(.horizontal, 16)
+                }
             }
         }
      
@@ -110,7 +118,6 @@ struct DrSmartScreen: View {
                     .font(.system(size: 16))
                     .foregroundColor(Color.hiSecondaryText)
             }
-            
         }
     }
 
@@ -118,7 +125,26 @@ struct DrSmartScreen: View {
         VStack(spacing: 24) {
             HStack {
                 ForEach(Array(vm.processArr.enumerated()) ,id: \.element.id) { index, process in
-                    DrSmartProcessItem(status: process.status,activeImg: process.activeIcon, inActiveImg: process.inActiveIcon)
+                    
+                    
+                    if progress >= Double((index + 1)) * self.oneThirdProgress {
+                        //Set active with checkmark
+                        DrSmartProcessItem(status: .active,activeImg: process.activeIcon, inActiveImg: process.inActiveIcon)
+                    }else if(index == 0) {
+                        //Set loading state
+                        DrSmartProcessItem(status: .loading,activeImg: process.activeIcon, inActiveImg: process.inActiveIcon)
+                    }
+                    else if(index > 0){
+                        if(vm.processArr[index - 1].status == .active || (index == 1 && progress != 0)){
+                            DrSmartProcessItem(status: .waiting,activeImg: process.activeIcon, inActiveImg: process.inActiveIcon)
+                        }else {
+                            DrSmartProcessItem(status: .inActive,activeImg: process.activeIcon, inActiveImg: process.inActiveIcon)
+                        }
+                    }
+                    else {
+                        DrSmartProcessItem(status: .inActive,activeImg: process.activeIcon, inActiveImg: process.inActiveIcon)
+                    }
+                    
                     
                     
                     if index != vm.processArr.count - 1 {
@@ -126,6 +152,8 @@ struct DrSmartScreen: View {
                     }
                 }
             }
+            .frame(height: 78)
+            
             
             if !vm.isCheckingCompleted {
                 GeometryReader {geo in
@@ -133,14 +161,17 @@ struct DrSmartScreen: View {
                         .foregroundColor(Color(hex: "#DDE4FC"))
                         .frame(maxWidth: .infinity)
                         .frame(height: 4)
-                        .padding(.all, 8)
                         .backport.overlay(alignment: .leading) {
                             Capsule()
                                 .foregroundColor(.blue)
                                 .frame(height: 4)
-                                .frame(width: (geo.size.width  * progress))
+                                .frame(width: (geo.size.width * progress))
+                            
                         }
+
                 }
+                .padding(.horizontal, 8)
+
                 
             }
             
@@ -173,8 +204,7 @@ struct DrSmartScreen: View {
                }
                
                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){
-                   vm.isCheckingCompleted = true
-                   timer?.invalidate()
+                   self.finishChecking()
                }
            }
     }
@@ -206,13 +236,16 @@ struct DrSmartScreen: View {
            }
     }
     
-    private func resumeProgress() {
+    
+    /// Resume the checking process
+    /// - Parameters:
+    ///   - duration: seconds
+    private func resumeProgress(duration: Int, completion: @escaping () -> Void) {
         if progress < 1.0 {
-            let durationToComplete = 0.5
             let progressUncompleted = 1.0 - progress
             
             let updateInterval = 0.1
-            let totalUpdates = Double(durationToComplete) / updateInterval
+            let totalUpdates = Double(duration) / updateInterval
             
             let dispatchQueue = DispatchQueue(label: "progressQueue", qos: .userInteractive)
             
@@ -227,14 +260,10 @@ struct DrSmartScreen: View {
                     }
                 }
                 
-//                DispatchQueue.main.async {
-//                    vm.isCheckingCompleted = true
-//                    timer?.invalidate()
-//                }
-                
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){
-                    vm.isCheckingCompleted = true
+                    completion()
                     timer?.invalidate()
+
                 }
                 
             }
@@ -243,10 +272,10 @@ struct DrSmartScreen: View {
         }
     }
     
-    
-    
-
-    
+    private func finishChecking() {
+        vm.isCheckingCompleted = true
+        timer?.invalidate()
+    }
 }
 
 

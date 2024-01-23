@@ -8,32 +8,7 @@
 import Foundation
 import SwiftUI
 
-extension Text {
-     func boldKeywords(_ originalText: String, keywords: [String]) -> Text {
-        var resultText = Text("")
 
-        var currentIndex = originalText.startIndex
-
-        for keyword in keywords {
-            guard let range = originalText.range(of: keyword, range: currentIndex..<originalText.endIndex) else {
-                continue
-            }
-
-            let beforeKeyword = String(originalText[currentIndex..<range.lowerBound])
-            let keywordText = Text(originalText[range.lowerBound..<range.upperBound])
-                .bold()
-
-            resultText = resultText + Text(beforeKeyword) + keywordText
-
-            currentIndex = range.upperBound
-        }
-
-        let remainingText = String(originalText[currentIndex...])
-        resultText = resultText + Text(remainingText)
-
-        return resultText
-    }
-}
 
 
 

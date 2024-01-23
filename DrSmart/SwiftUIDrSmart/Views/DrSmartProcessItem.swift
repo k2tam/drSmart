@@ -9,11 +9,11 @@ import SwiftUI
 import SwiftUIBackports
 
 struct DrSmartProcessItem: View {
-    var status: eDrSmartProcessStatus
+    var status: eDrSmartProcessItemStatus
     var activeImg: String
     var inActiveImg: String?
     
-    init(status: eDrSmartProcessStatus = .inActive,activeImg: String, inActiveImg: String? = nil) {
+    init(status: eDrSmartProcessItemStatus = .inActive,activeImg: String, inActiveImg: String? = nil) {
         self.status = status
         self.activeImg = activeImg
         self.inActiveImg = inActiveImg
@@ -28,7 +28,7 @@ struct DrSmartProcessItem: View {
             }else {
                 Circle()
                     .frame(width: 64, height: 64)
-                    .foregroundColor(Color(hex: "#E5EAFF",alpha: 0.4))
+                    .foregroundColor(Color(hex: "#E5EAFF",alpha: 0.3))
             }
            
             
@@ -38,7 +38,7 @@ struct DrSmartProcessItem: View {
                     Circle()
                         .frame(width: 50, height: 50)
                         .foregroundColor(.white)
-                        .shadow(color: .black.opacity(0.15), radius: 2.47133, x: 0, y: 0)
+                        .shadow(color: .black.opacity(0.15), radius: 3, x: 0, y: 0)
                         .backport.overlay(alignment: .topTrailing) {
                             if status == .active {
                                 HiImage(string: "ic_check")
@@ -55,7 +55,7 @@ struct DrSmartProcessItem: View {
             
     }
     
-    private func setIconProcess(_ status: eDrSmartProcessStatus) -> String {
+    private func setIconProcess(_ status: eDrSmartProcessItemStatus) -> String {
         switch status {
         case .waiting:
             return inActiveImg ?? ""

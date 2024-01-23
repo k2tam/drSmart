@@ -12,7 +12,7 @@ import Lottie
 struct LottieView: UIViewRepresentable {
     let name: String
     let loopMode: LottieLoopMode
-    let animationSpeed: CGFloat = 0.5
+    let animationSpeed: CGFloat = 0.7
     
     func makeUIView(context: Context) -> some UIView {
         UIView()

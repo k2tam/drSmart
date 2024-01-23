@@ -18,7 +18,7 @@ struct DrSmartModel {
 }
 
 
-enum eDrSmartProcessStatus: String {
+enum eDrSmartProcessItemStatus: String {
     case loading
     case waiting
     case active
@@ -27,7 +27,7 @@ enum eDrSmartProcessStatus: String {
 
 struct Process: Identifiable {
     var id = UUID()
-    var status: eDrSmartProcessStatus
+    var status: eDrSmartProcessItemStatus
     var activeIcon: String
     var inActiveIcon: String? = nil
 }
@@ -40,16 +40,33 @@ struct DetectedAndSolved: Hashable {
     }
 }
 
-struct CantHandleError: Hashable {
+
+enum eRecommendForHandlingType {
+    case info
+    case warning
+    
+    func recommendIconString() -> String {
+        switch self {
+        case .info:
+            return "ic_info_circle"
+        case .warning:
+            return "ic_linear_danger"
+        }
+    }
+}
+
+struct RecommendForHandling: Hashable {
+    let type: eRecommendForHandlingType
     let title: String
-    let descText: String
-    let btnText: String
+    let descText: String?
+    let btnText: String?
     
     func hash(into hasher: inout Hasher) {
         hasher.combine(title)
     }
 }
 
+//MARK: - NotDetectErroItem
 struct NotDetectErroItem: Hashable {
     let title: String
     let body: String
@@ -63,4 +80,5 @@ struct Recommend {
     var type: eRecommendType
     let title: String
     let body: String
+    let keywords: [String]?
 }
