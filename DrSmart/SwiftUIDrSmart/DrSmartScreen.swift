@@ -22,6 +22,10 @@ protocol DrSmartScreenDelegate: AnyObject {
 }
 
 struct DrSmartScreen: View {
+    //Test props
+    @State var isUsingStopAt: Bool = false
+    
+    
     var delegate: DrSmartScreenDelegate?
     @State var isStopProcess: Bool = false
 
@@ -64,7 +68,7 @@ struct DrSmartScreen: View {
                 .hiNavBarTrailingView {
                     if vm.isCheckingCompleted {
                         Button(action: {
-                            
+                            resetChecking()
                         }, label: {
                             HiImage(named: "ic_x_close")
                                 .frame(width: 24, height: 24)
@@ -102,11 +106,12 @@ struct DrSmartScreen: View {
             })
             .hiFooter {
                 switch vm.currentState {
+                    
                 case .runningCheck:
                     return HiFooterTwoButtons(secondaryTitle: "Huỷ quét", secondaryAction: {
                         //MARK: - Cancel check
                         self.isStopProcess = true
-                        self.resetProcess()
+                        self.resetChecking()
                         
                     }, primaryTitle: nil) {
                         
@@ -147,7 +152,7 @@ struct DrSmartScreen: View {
         })
         .onReceive(vm.$isCheckingCompleted, perform: {  returnedIsCheckingCompleted in
             if returnedIsCheckingCompleted{
-                self.finishChecking()
+                self.onFinishChecking()
             }
         })
     
@@ -167,12 +172,11 @@ struct DrSmartScreen: View {
                             rushFinishChecking(duration: 1)
                         }
                     }, label: {
-                        Text(isStopProcess ? "Rush 💨" : "Pause")
+                        Text(isStopProcess ? "Finish" : "Pause")
                     })
 
                     
                     Button {
-//                        self.startCheckProgressStopAt(percentage: 0.8, duration: 8)
                         self.startCheckProgress()
 
                     } label: {
@@ -180,13 +184,17 @@ struct DrSmartScreen: View {
                     }
                     
                     Button {
-                        self.resumeProgress(duration: 5, completion: {
-                            finishChecking()
-                            
-                        })
+                        self.isUsingStopAt.toggle()
+                        
+                        if isUsingStopAt {
+                            self.startCheckProgressPauseAt(percentage: 0.5, duration: 3)
+
+                        }else {
+                            self.rushFinishChecking(duration: 1)
+                        }
                         
                     } label: {
-                        Text("Resume")
+                        Text(isUsingStopAt ? "Finish" : "Start to %")
                     }
                     
                 }
@@ -265,46 +273,19 @@ struct DrSmartScreen: View {
         }
        
     }
-    
-    
-    
-    
+
     private func startCheckProgress() {
         
         self.isStopProcess = false
         
     
-        let updateInterval = 0.1
+        let updateInterval = Double(0.1)
         let totalUpdates = Double(vm.checkDuration) / 0.1
+        print(totalUpdates)
         
-        
-        
-        runProcess(updateInterval: updateInterval, duration: vm.checkDuration)
-        
-//        let dispatchQueue = DispatchQueue(label: "progressQueue", qos: .userInteractive)
-//        dispatchQueue.async {
-//            for _ in 0..<Int(totalUpdates) {
-//                Thread.sleep(forTimeInterval: updateInterval)
-//                
-//                DispatchQueue.main.async {
-//                    withAnimation {
-//                        if !isStopProcess {
-//                            progress += 1.0 / totalUpdates
-//                        } else {
-//                            return
-//                        }
-//                       
-//                    }
-//                }
-//            }
-//            
-//            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){
-//                if progress >= 1.0 && !isStopProcess {
-//                    self.finishChecking()
-//
-//                }
-//            }
-//        }
+        runProcess(updateInterval: updateInterval, duration: vm.checkDuration) {
+            
+        }
     }
     
   
@@ -313,18 +294,33 @@ struct DrSmartScreen: View {
 }
 
 extension DrSmartScreen {
-    private func runProcess(updateInterval: Double, duration: Int){
+    private func runProcess(stopPercentage: Double? = nil,updateInterval: Double, duration: Int, completion:  (() -> Void)?){
+        print(stopPercentage)
         let totalUpdates = Double(duration) / updateInterval
         
         let dispatchQueue = DispatchQueue(label: "progressQueue", qos: .userInteractive)
         dispatchQueue.async {
             for _ in 0..<Int(totalUpdates) {
+                if isStopProcess {
+                    return
+                }
+                
                 Thread.sleep(forTimeInterval: updateInterval)
                 
                 DispatchQueue.main.async {
                     withAnimation {
                         if !self.isStopProcess && progress < 1.0 {
+                            if let stopPercentage {
+                                if progress >= stopPercentage {
+                                    self.isStopProcess = true
+                                    self.progress = stopPercentage
+
+                                }
+                            }
+                            
                             progress += 1.0 / totalUpdates
+                            
+                            
                         } else {
                             return
                         }
@@ -336,7 +332,7 @@ extension DrSmartScreen {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){
                 if progress >= 1.0 && !isStopProcess {
                     self.finishChecking()
-
+                    
                 }
             }
         }
@@ -345,55 +341,41 @@ extension DrSmartScreen {
     private func rushFinishChecking(duration: Int,  completion: (() -> Void)? =  nil) {
         self.isStopProcess = false
         
-        if progress < 1.0 {            
+        if progress < 1.0 {
             let updateInterval = 0.1
 //            let totalUpdates = Double(duration) / updateInterval
+
+            self.runProcess(updateInterval: updateInterval, duration: duration) {
+                completion
+            }
             
-            self.runProcess( updateInterval: updateInterval, duration: duration)
-            
-            
-//            let dispatchQueue = DispatchQueue(label: "progressQueueRush", qos: .userInteractive)
-//            dispatchQueue.async {
-//                for _ in 0..<Int(totalUpdates) {
-//                    Thread.sleep(forTimeInterval: updateInterval)
-//                    
-//                    DispatchQueue.main.async {
-//                        withAnimation {
-//                            if progress < 1.0 {
-//                                progress += 1.0 / totalUpdates
-//
-//                            }
-//                           
-//                           
-//                        }
-//                    }
-//                }
-//                
-//                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){
-//                    if progress >= 1.0  {
-//                        self.finishChecking()
-//
-//                    }
-//                }
-//            }
+
             
             
         }
     }
     
-    //MARK: - Handle On Checking Completed
     private func finishChecking() {
+        self.vm.isCheckingCompleted = true
+    }
+    
+    //MARK: - Handle On Checking Completed
+    private func onFinishChecking() {
         self.navTitle = "Kết quả kiểm tra"
+        
         
         //Set current state for change footer view
         self.vm.currentState = .resultWithErrorHandledWithoutRecommend
         self.isShowRecommendTip = true
+        print(vm.isCheckingCompleted)
     }
     
-    private func resetProcess() {
+    private func resetChecking() {
         self.vm.isCheckingCompleted = false
         self.progress = 0.0
         self.currentProcessIndex = 0
+        self.vm.currentState = .runningCheck
+        self.isShowRecommendTip = false
         
         for i in 0..<vm.processArr.count {
             if i == 0 {
@@ -410,28 +392,12 @@ extension DrSmartScreen {
     private func startCheckProgressPauseAt(percentage: Double, duration: Int,completion: (() -> Void)? = nil)  {
         
         let updateInterval = 0.1
-        let totalUpdates = Double(duration) / updateInterval
-        
-        let dispatchQueue = DispatchQueue(label: "progressQueue", qos: .userInteractive)
-        
-        // Start updating the progress using DispatchQueue
-        dispatchQueue.async {
-            for _ in 0..<Int(totalUpdates) {
-                Thread.sleep(forTimeInterval: updateInterval)
-                
-                DispatchQueue.main.async {
-                    withAnimation {
-                        progress += percentage / totalUpdates
-                    }
-                }
-            }
-            completion?()
+
+        runProcess(stopPercentage: percentage,updateInterval: updateInterval, duration: duration) {
+            completion
         }
     }
-    
 
-    
-    
     /// Resume the checking process
     /// - Parameters:
     ///   - duration: seconds
@@ -457,7 +423,7 @@ extension DrSmartScreen {
                 
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){
                     completion?()
-                    finishChecking()
+                    onFinishChecking()
                     
                 }
                 
