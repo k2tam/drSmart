@@ -22,7 +22,12 @@ class DrSmartViewModel: ObservableObject {
     private var timer: Timer?
     @Published var currentState: eDrSmartState = .runningCheck
     
-    let checkDuration: Int =  10
+
+   
+       
+       
+    
+    let checkDuration: Int =  6
     
 
     private var cancelables = Set<AnyCancellable>()

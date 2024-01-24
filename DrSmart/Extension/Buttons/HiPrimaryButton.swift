@@ -7,11 +7,6 @@
 
 import SwiftUI
 
-enum eButtonType {
-    case primary
-    case secondary
-}
-
 struct HiPrimaryButton: View {
     var text: String
     var isEnable: Bool = true
@@ -20,18 +15,24 @@ struct HiPrimaryButton: View {
     let enableColor = Color.hiPrimary
     let disableColor = Color.hiC7CBCF
     var body: some View {
-        Button {
-            onClick()
-        } label: {
-            Text(text)
-                .padding()
+        if text.isEmpty {
+            Color.clear
                 .frame(maxWidth: .infinity)
                 .frame(height: 48)
-                .font(.system(size: 14, weight: .semibold))
-                .foregroundColor(isEnable ? Color.white : Color.black)
-                .background(isEnable ? enableColor : disableColor)
-                .clipShape(RoundedRectangle(cornerRadius: 8))
+        } else {
+            Button {
+                onClick()
+            } label: {
+                Text(text)
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 48)
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundColor(Color.white)
+                    .background(isEnable ? enableColor : disableColor)
+                    .clipShape(RoundedRectangle(cornerRadius: 8))
+            }
+            .disabled(!isEnable)
         }
-        .disabled(!isEnable)
     }
 }

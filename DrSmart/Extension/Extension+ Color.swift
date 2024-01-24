@@ -34,7 +34,7 @@ public extension Color {
     static let hi767676 = Color(red: 0.46, green: 0.46, blue: 0.46)
     static let hiC7CBCF = Color(red: 0.78, green: 0.8, blue: 0.81)
     static let hiAAA = Color(red: 170/255, green: 170/255, blue: 170/255)
-    
+    static let hiF0F3FE = Color(hex: "#F0F3FE")
     
     //Tambnk added
     static let hiPrimary = Color(red: 69/255, green: 100/255, blue: 237/255)

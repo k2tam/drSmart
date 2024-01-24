@@ -130,18 +130,7 @@ extension HiNavigationBarView {
 }
 
 
-extension View {
-    func hiFooter<Content: View>(@ViewBuilder _ footerView: () -> Content) -> some View {
-        ZStack(alignment: .bottom) {
-            self
-            
-            ZStack{
-                footerView()
-            }
-        }
-        .edgesIgnoringSafeArea(.bottom)
-    }
-}
+
 
 
 

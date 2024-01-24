@@ -7,14 +7,26 @@
 
 import SwiftUI
 
+struct HiBottomConstants {
+    static let kHeightFooterOneButton: CGFloat = 96
+    static let kHeightFooterTwoButtons: CGFloat = 122
+    static let kContentToFooter: CGFloat = 40
+}
+
+enum BottomDirection {
+    case vertical
+    case horizontal
+}
+
+
 struct HiFooterTwoButtons: View {
-    let direction: eDirection
+    let direction: BottomDirection
     private var heightFooter: CGFloat {
         switch direction {
         case .vertical:
-            return Constants.kHeightFooter2Buttons
+            return HiBottomConstants.kHeightFooterOneButton
         case .horizontal:
-            return Constants.kHeightFooter1Button
+            return HiBottomConstants.kHeightFooterTwoButtons
         }
     }
     let primaryTitle: String?
@@ -22,7 +34,13 @@ struct HiFooterTwoButtons: View {
     let secondaryTitle: String?
     let secondaryAction: () -> Void
     
-    init(direction: eDirection, primaryTitle: String?, primaryAction: @escaping () -> Void, secondaryTitle: String?, secondaryAction: @escaping () -> Void) {
+    init(
+        direction: BottomDirection = .horizontal,
+        secondaryTitle: String? = nil,
+        secondaryAction: @escaping () -> Void = {},
+        primaryTitle: String?,
+        primaryAction: @escaping () -> Void
+    ) {
         self.direction = direction
         self.primaryTitle = primaryTitle
         self.primaryAction = primaryAction
@@ -31,9 +49,7 @@ struct HiFooterTwoButtons: View {
     }
 
     var body: some View {
-        ZStack{
-            Color.white
-            
+        Group {
             if direction == .horizontal {
                 HStack(spacing: 16){
                     if let secondaryTitle  {
@@ -52,11 +68,11 @@ struct HiFooterTwoButtons: View {
                     
                     
                 }
-                .padding(.init(top: 16, leading: 16, bottom: 32, trailing: 16))
+                .padding(16)
                 
             }else {
                 VStack(spacing: 16){
-                    if let primaryTitle{
+                    if let primaryTitle {
                         HiPrimaryButton( text: primaryTitle) {
                             primaryAction()
                         }
@@ -72,17 +88,35 @@ struct HiFooterTwoButtons: View {
                     
                     
                 }
-                .padding(.init(top: 16, leading: 16, bottom: 32, trailing: 16))
             }
         }
-        .frame(height: self.heightFooter)
+        .padding(.bottom, 16)
+        .background(Color.white)
+        .overlay(
+            Rectangle()
+                .inset(by: 0.25)
+                .stroke(Color(red: 0.91, green: 0.91, blue: 0.91), lineWidth: 0.5)
+            
+        )
     }
 }
 
 #Preview {
-    HiFooterTwoButtons(direction: .horizontal, primaryTitle: "primary", primaryAction: {
+    HiFooterTwoButtons(direction: .horizontal, secondaryTitle: "primary", secondaryAction: {
         
-    }, secondaryTitle: "secondary") {
+    }, primaryTitle: "secondary") {
         
+    }
+}
+
+extension View {
+    func hiFooter(@ViewBuilder _ footerView: () -> HiFooterTwoButtons) -> some View {
+        ZStack(alignment: .bottom) {
+            self
+            ZStack{
+                footerView()
+            }
+        }
+        .edgesIgnoringSafeArea(.bottom)
     }
 }

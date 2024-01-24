@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct ProcessView: View {
-    let oneThirdProgress: Double = 1.0 / 3.0
     let progress: CGFloat
     let processArr: [Process]
     let isCheckingCompleted: Bool
@@ -20,27 +19,7 @@ struct ProcessView: View {
             HStack {
                 ForEach(Array(processArr.enumerated()) ,id: \.element.id) { index, process in
                     DrSmartProcessItem(status: process.status,activeImg: process.activeIcon, inActiveImg: process.inActiveIcon)
-
-//                    if progress >= Double((index + 1)) * self.oneThirdProgress {
-//                        //Set active with checkmark
-//                        DrSmartProcessItem(status: .active,activeImg: process.activeIcon, inActiveImg: process.inActiveIcon)
-//                    }else if(index == 0) {
-//                        //Set loading state
-//                        DrSmartProcessItem(status: .loading,activeImg: process.activeIcon, inActiveImg: process.inActiveIcon)
-//                    }
-//                    else if(index > 0){
-//                        if(processArr[index - 1].status == .active || (index == 1 && progress != 0)){
-//                            DrSmartProcessItem(status: .waiting,activeImg: process.activeIcon, inActiveImg: process.inActiveIcon)
-//                        }else {
-//                            DrSmartProcessItem(status: .inActive,activeImg: process.activeIcon, inActiveImg: process.inActiveIcon)
-//                        }
-//                    }
-//                    else {
-//                        DrSmartProcessItem(status: .inActive,activeImg: process.activeIcon, inActiveImg: process.inActiveIcon)
-//                    }
-                    
-                    
-                    
+            
                     if index != processArr.count - 1 {
                         Spacer()
                     }
