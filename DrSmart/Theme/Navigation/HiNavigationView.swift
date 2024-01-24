@@ -119,7 +119,7 @@ extension HiNavigationBarView {
         Button(action: {
             presentationMode.wrappedValue.dismiss()
         }, label: {
-            HiImage(string: self.navButton)
+            HiImage(named: self.navButton)
                 .aspectRatio(contentMode: .fit)
                 .frame(width: 20, height: 20)
                 .foregroundColor(Color(hex: "#333333"))

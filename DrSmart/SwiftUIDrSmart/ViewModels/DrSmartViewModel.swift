@@ -8,13 +8,19 @@
 import Foundation
 import Combine
 
-
+enum eDrSmartState {
+    case runningCheck
+    case resultWithoutError
+    case resultWithErrorHandledWithoutRecommend
+    case resultNoErrorWithRecommends
+}
 
 
 class DrSmartViewModel: ObservableObject {
 
     @Published var isCheckingCompleted: Bool = false
     private var timer: Timer?
+    @Published var currentState: eDrSmartState = .runningCheck
     
     let checkDuration: Int =  10
     

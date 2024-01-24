@@ -7,25 +7,58 @@
 
 import SwiftUI
 
+struct HiImageColorPreferenceKey: PreferenceKey {
+    static var defaultValue: Color? = nil
+    
+    static func reduce(value: inout Color?, nextValue: () -> Color?) {
+        value = nextValue()
+    }
+}
+
+extension HiImage {
+    func hiImageColor(color: Color) -> some View {
+        self
+            .preference(key: HiImageColorPreferenceKey.self, value: color) 
+    }
+}
+
 public struct HiImage: View {
-    var string: String
+    var name: String
+    @State var color: Color?
+    var bundle: Bundle?
     
     public init(
-        string: String
+        named name: String,
+        color: Color? = nil,
+        in bundle: Bundle? = nil
     ) {
-        self.string = string
+        self.name = name
+        self.color = color
+        self.bundle = bundle
     }
     public var body: some View {
-        if #available(iOS 14.0, *) {
-            Image(string)
-                .resizable()
-        } else {
-            Image(string)
-                .resizable()
-                .renderingMode(.original)
+        ZStack {
+            // image
+            if #available(iOS 14.0, *) {
+                Image(name)
+                    .resizable()
+            } else {
+                Image(name)
+                    .resizable()
+                    .renderingMode(.original)
+            }
             
+            // color
+            if let color = color {
+                color.blendMode(.sourceAtop)
+            }
         }
-    
+        .onPreferenceChange(HiImageColorPreferenceKey.self, perform: { value in
+            self.color = value
+        })
+        .drawingGroup(opaque: false)
     }
 }
  
+
+

@@ -30,13 +30,14 @@ struct HiFooterOneButton: View {
             
             switch buttonType {
             case .primary:
-                HiPrimaryButton(btnText: title) {
+                HiPrimaryButton(text: title) {
                     action()
                 }
+               
                 .padding(.init(top: 16, leading: 16, bottom: 32, trailing: 16))
                 .frame(maxWidth: .infinity)
             case .secondary:
-                HiSecondaryButton(btnText: title) {
+                HiSecondaryButton(text: title, isEnable: true) {
                     action()
                 }
                 .padding(.init(top: 16, leading: 16, bottom: 32, trailing: 16))
@@ -49,7 +50,7 @@ struct HiFooterOneButton: View {
 }
 
 #Preview {
-    HiFooterOneButton(buttonType: .primary, title: "HI FPT"){
+    HiFooterOneButton(buttonType: .secondary, title: "HI FPT"){
         
     }
 }

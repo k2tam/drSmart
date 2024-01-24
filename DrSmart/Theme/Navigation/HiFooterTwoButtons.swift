@@ -37,14 +37,14 @@ struct HiFooterTwoButtons: View {
             if direction == .horizontal {
                 HStack(spacing: 16){
                     if let secondaryTitle  {
-                        HiSecondaryButton(btnText: secondaryTitle) {
+                        HiSecondaryButton(text: secondaryTitle, isEnable: true) {
                             secondaryAction()
                         }
                         .frame(height: 48)
                     }
                     
                     if let primaryTitle {
-                        HiPrimaryButton(btnText: primaryTitle) {
+                        HiPrimaryButton(text: primaryTitle) {
                             primaryAction()
                         }
                         .frame(height: 48)
@@ -57,14 +57,14 @@ struct HiFooterTwoButtons: View {
             }else {
                 VStack(spacing: 16){
                     if let primaryTitle{
-                        HiPrimaryButton( btnText: primaryTitle) {
+                        HiPrimaryButton( text: primaryTitle) {
                             primaryAction()
                         }
                         .frame(height: 48)
                     }
                     
                     if let secondaryTitle {
-                        HiSecondaryButton(btnText: secondaryTitle) {
+                        HiSecondaryButton(text: secondaryTitle) {
                             secondaryAction()
                         }
                         .frame(height: 48)

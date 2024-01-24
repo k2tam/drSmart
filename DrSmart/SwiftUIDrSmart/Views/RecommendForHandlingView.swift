@@ -30,8 +30,9 @@ struct RecommendForHandlingView: View {
             switch self.type {
             case .info:
                 HStack(alignment: .top,spacing: 12) {
-                    HiImage(string: type.recommendIconString())
+                    HiImage(named: type.recommendIconString())
                         .frame(width: 24, height: 24)
+                        
                     
                     Text(title)
                         .font(.system(size: 16))
@@ -44,7 +45,7 @@ struct RecommendForHandlingView: View {
                 }
             case .warning:
                 HStack(spacing: 16) {
-                    HiImage(string: type.recommendIconString())
+                    HiImage(named: type.recommendIconString())
                         .frame(width: 36, height: 36)
                     
                     Button(action: {
@@ -61,7 +62,8 @@ struct RecommendForHandlingView: View {
                             
                             Spacer()
                             
-                            HiImage(string: "ic_down_arrow")
+                            HiImage(named: "ic_down_arrow")
+                            
                                 .rotationEffect(self.isExpandDesc ? .degrees(-180) : .degrees(0))
                                 .frame(width: 24, height: 24)
                         }
@@ -86,15 +88,9 @@ struct RecommendForHandlingView: View {
             //MARK: - Btn View
             if self.type == .warning {
                 if let btnText = self.btnText {
-                    Button(action: {
+                    HiSecondaryButton(text: btnText, isEnable: true) {
                         
-                    }, label: {
-                        
-                        HiSecondaryButton(btnText: btnText) {
-                            btnAction()
-                        }
-                        .frame(height: 40)
-                    })
+                    }
                 }
                 
             }

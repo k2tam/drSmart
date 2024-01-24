@@ -32,7 +32,7 @@ struct DrSmartProcessItem: View {
             }
            
             
-            HiImage(string: setIconProcess(self.status))
+            HiImage(named: setIconProcess(self.status))
                 .frame(width: 32, height: 32)
                 .background(
                     Circle()
@@ -41,10 +41,11 @@ struct DrSmartProcessItem: View {
                         .shadow(color: .black.opacity(0.15), radius: 3, x: 0, y: 0)
                         .backport.overlay(alignment: .topTrailing) {
                             if status == .active {
-                                HiImage(string: "ic_check")
+                                HiImage(named: "ic_check")
                                     .aspectRatio(contentMode: .fill)
                                     .frame(width: 13, height: 13)
                                     .offset(y: 1)
+                                    
                             }
                         }
                     

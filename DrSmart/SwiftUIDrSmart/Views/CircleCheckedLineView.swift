@@ -19,7 +19,7 @@ struct CircleCheckedLineView: View {
     
     var body: some View {
         HStack {
-            HiImage(string: "ic_drSmart_tick_circle")
+            HiImage(named: "ic_drSmart_tick_circle")
                 .frame(width: 36, height: 36)
             
             VStack(alignment: .leading, spacing: 4) {

@@ -29,7 +29,8 @@ struct RecommendView: View {
     var body: some View {
         if -offset.width <= (UIScreen.main.bounds.width / 2.0) {
             HStack(alignment: .top, spacing: 12) {
-                HiImage(string: type == .info ? "ic_info_circle" : "ic_bold_danger")
+                HiImage(named: type == .info ? "ic_info_circle" : "ic_bold_danger")
+                
                     .frame(width: 32, height: 32)
                 
                 VStack(alignment: .leading,spacing: 4){

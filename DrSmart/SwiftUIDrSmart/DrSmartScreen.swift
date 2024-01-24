@@ -8,6 +8,7 @@
 import SwiftUI
 import SwiftUIBackports
 import Lottie
+import Combine
 
 
 enum eDrSmartAction {
@@ -24,32 +25,135 @@ struct DrSmartScreen: View {
     var delegate: DrSmartScreenDelegate?
     @State var progressQueue: DispatchQueue? = nil
     
-    
+    var cancellables = Set<AnyCancellable>()
+    let pubTimer: Timer.TimerPublisher? = nil
+
     @Backport.StateObject var vm =  DrSmartViewModel()
     @State private var timer: Timer?
     @State private var progress: CGFloat = 0.0
-    @State private var isShowRecommendTip: Bool = true
     @State private var currentProcessIndex: Int = 0
+    
+    //Recommend tip view props
+    @State private var isShowRecommendTip: Bool = false
+    @State private var recommendTipDurationCount: Int = 4
+    
     
     //Navigation and footer props
     @State var navTitle: String = "Kiểm tra"
     @State var btnFooterPrimaryTitle: String? = nil
     @State var btnFooterSecondaryTitle: String? = "Huỷ quét"
     
+    
+    
+    //MARK: - Handle On Checking Completed
     private func onCheckingCompleted() {
         self.navTitle = "Kết quả kiểm tra"
+        
+        //Set current state for change footer view
+        self.vm.currentState = .resultWithErrorHandledWithoutRecommend
     }
     
     private func resetProcess() {
+        
         self.timer?.invalidate()
         self.vm.isCheckingCompleted = false
         self.progress = 0.0
         self.currentProcessIndex = 0
-        self.progressQueue = DispatchQueue(label: "progressQueue", qos: .userInteractive)
         
         for i in 0..<vm.processArr.count {
             vm.processArr[i].status = .inActive
         }
+    }
+    
+    var body: some View {
+        NavigationView {
+            HiNavigationView {
+                ZStack(alignment: .bottom) {
+                    Color.hiBackground
+                    contentView
+                    recommendTipView
+                }
+                .hiNavigationTitle(self.navTitle)
+                .hiNavButtonHidden(vm.isCheckingCompleted)
+                .hiNavBarTrailingView {
+                    if vm.isCheckingCompleted {
+                        Button(action: {
+                            
+                        }, label: {
+                            HiImage(named: "ic_x_close")
+                                .frame(width: 24, height: 24)
+                        })
+                    }
+                    
+                }
+                
+            }
+            .onAppear(perform: {
+                self.isShowRecommendTip = true
+                
+                if !vm.isCheckingCompleted{
+                    vm.processArr[0].status = .loading
+
+                }
+                
+                
+            })
+            .onDisappear(perform: {
+                
+            })
+            .backport.onChange(of: self.progress, perform: { progress in
+                let progressPerProcess = 1.0 / Double(vm.processArr.count)
+ 
+                if progress >=  progressPerProcess * (Double(currentProcessIndex) + 1.0) {
+                    vm.processArr[currentProcessIndex].status = .active
+                    
+                    if currentProcessIndex < vm.processArr.count - 1{
+                        currentProcessIndex += 1
+
+                    }
+                }
+                
+                if currentProcessIndex < vm.processArr.count - 1   {
+                    vm.processArr[currentProcessIndex + 1].status = .waiting
+
+                }
+                
+            })
+            
+            .hiFooter {
+                switch vm.currentState {
+                case .runningCheck:
+                    HiFooterOneButton(buttonType: .secondary, title: "Huỷ quét") {
+                        
+                    }
+                case .resultWithoutError:
+                    HiFooterOneButton(buttonType: .primary, title: "Tiếp tục báo lỗi") {
+                        
+                    }
+                case .resultWithErrorHandledWithoutRecommend:
+                    HiFooterTwoButtons(direction: .horizontal, primaryTitle: "Hoàn tất", primaryAction: {
+                        
+                    }, secondaryTitle: "Tiếp tục báo lỗi") {
+                        
+                    }
+                case .resultNoErrorWithRecommends:
+                    HiFooterOneButton(buttonType: .primary, title: "Cần nhân viên hỗ trợ") {
+                        
+                    }
+                }
+            }
+
+        }
+        
+        .onReceive(vm.$isCheckingCompleted, perform: {  returnedIsCheckingCompleted in
+            if returnedIsCheckingCompleted{
+                self.onCheckingCompleted()
+            }
+        })
+    
+        .navigationBarHidden(true)
+        .navigationBarTitle("")
+        
     }
 
     private var contentView: some View {
@@ -57,7 +161,7 @@ struct DrSmartScreen: View {
             VStack(spacing: 24) {
                 HStack(spacing: 32) {
                     NavigationLink {
-                        TestView()
+                        TestHiImage()
                     } label: {
                         Text("Nav")
                     }
@@ -158,71 +262,7 @@ struct DrSmartScreen: View {
        
     }
     
-    var body: some View {
-        NavigationView {
-            HiNavigationView {
-                ZStack(alignment: .bottom) {
-                    Color.hiBackground
-                    contentView
-                    recommendTipView
-                }
-                .hiNavigationTitle(self.navTitle)
-                .hiNavButtonHidden(false)
-                .hiNavBarTrailingView {
-                    if vm.isCheckingCompleted {
-                        Button(action: {
-                            
-                        }, label: {
-                            HiImage(string: "ic_x_close")
-                                .frame(width: 24, height: 24)
-                        })
-                    }
-                    
-                }
-                
-            }
-            .onAppear(perform: {
-            })
-            .onDisappear(perform: {
-                self.resetProcess()
-                
-            })
-            .backport.onChange(of: self.progress, perform: { progress in
-                let progressPerProcess = 1.0 / Double(vm.processArr.count)
- 
-                if progress >=  progressPerProcess * (Double(currentProcessIndex) + 1.0) {
-                    vm.processArr[currentProcessIndex].status = .active
-                    
-                    if currentProcessIndex < vm.processArr.count - 1{
-                        currentProcessIndex += 1
-
-                    }
-                }
-                
-                if currentProcessIndex < vm.processArr.count - 1   {
-                    vm.processArr[currentProcessIndex + 1].status = .waiting
-
-                }
-                
-            })
-            .hiFooter {
-                HiFooterTwoButtons(direction: .horizontal, primaryTitle: self.btnFooterPrimaryTitle, primaryAction: {
-                    
-                }, secondaryTitle: self.btnFooterSecondaryTitle) {
-                    
-                }
-            }
-        }
-        
-        .onReceive(vm.$isCheckingCompleted, perform: {  returnedIsCheckingCompleted in
-            if returnedIsCheckingCompleted{
-                self.onCheckingCompleted()
-            }
-        })
-        .navigationBarHidden(true)
-        .navigationBarTitle("")
-        
-    }
+    
     
     private func startCheckProgress() {
         self.progressQueue = DispatchQueue(label: "progressQueue", qos: .userInteractive)
@@ -333,48 +373,3 @@ struct DrSmartScreen_Previews: PreviewProvider {
 
 
 
-
-struct AnimatePlaceholderModifier: AnimatableModifier {
-    @Binding var isLoading: Bool
-    
-    @State private var isAnim: Bool = false
-    private var center = (UIScreen.main.bounds.width / 2) + 110
-    private let animation: Animation = .linear(duration: 1.5)
-    
-    init(isLoading: Binding<Bool>) {
-        self._isLoading = isLoading
-    }
-    
-    func body(content: Content) -> some View {
-        content.overlay(animView.mask(content))
-    }
-    
-    var animView: some View {
-        ZStack {
-            Color.black.opacity(isLoading ? 0.09 : 0.0)
-            Color.white.mask(
-                Rectangle()
-                    .fill(
-                        LinearGradient(gradient: .init(colors: [.clear, .white.opacity(0.48), .clear]), startPoint: .top , endPoint: .bottom)
-                    )
-                    .scaleEffect(1.5)
-                    .rotationEffect(.init(degrees: 70.0))
-                    .offset(x: isAnim ? center : -center)
-            )
-        }
-        .animation(isLoading ? animation.repeatForever(autoreverses: false) : nil, value: isAnim)
-        .onAppear {
-            guard isLoading else { return }
-            isAnim.toggle()
-        }
-        .backport.onChange(of: isLoading) { _ in
-            isAnim.toggle()
-        }
-    }
-}
-
-extension View {
-    func animatePlaceholder(isLoading: Binding<Bool>) -> some View {
-        self.modifier(AnimatePlaceholderModifier(isLoading: isLoading))
-    }
-}
