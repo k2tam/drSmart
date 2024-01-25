@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ProcessView: View {
-    let progress: CGFloat
+    let progress: Float
     let processArr: [Process]
     let isCheckingCompleted: Bool
     
@@ -38,7 +38,7 @@ struct ProcessView: View {
                             Capsule()
                                 .foregroundColor(Color.hiPrimary)
                                 .frame(height: 4)
-                                .frame(width: (geo.size.width * progress))
+                                .frame(width: (geo.size.width * CGFloat(progress)))
                             
                         }
 

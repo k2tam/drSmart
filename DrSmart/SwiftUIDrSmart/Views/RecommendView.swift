@@ -9,10 +9,10 @@ import SwiftUI
 
 
 struct RecommendView: View {
-    @Binding var isShow: Bool
     let type: eRecommendType
     let title: String
     let descText: String
+    let dismissAction: (() -> Void)?
     
     @State var offset: CGSize = .zero
     
@@ -68,7 +68,7 @@ struct RecommendView: View {
                             if -offset.width < (UIScreen.main.bounds.width / 2.0) {
                                 offset = .zero
                             }else {
-                                self.isShow = false
+                                self.dismissAction?()
                             }
 
                         }
@@ -82,5 +82,5 @@ struct RecommendView: View {
 }
 
 #Preview {
-    RecommendView(isShow: Binding.constant(true), type: .info, title: "Lưu ý", descText: "Nếu chưa thể xử lý theo gợi ý, Quý khách vui lòng nhấn Tiếp tục báo lỗi.")
+    RecommendView(type: .info, title: "Lưu ý", descText: "Nếu chưa thể xử lý theo gợi ý, Quý khách vui lòng nhấn Tiếp tục báo lỗi.", dismissAction: nil)
 }
