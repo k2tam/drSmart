@@ -19,10 +19,17 @@ class DrSmartViewModel: ObservableObject {
 
     @Published var isCheckingCompleted: Bool = false
     @Published var currentState: eDrSmartState = .runningCheck
-
     var cancelables = Set<AnyCancellable>()
+    
+    //Progress Props
     private var processTimerSubscription = Set<AnyCancellable>()
     let processTimer = Timer.publish(every: 0.1, on: .main, in: .common).autoconnect()
+    
+    @Published var isStopProgress: Bool = true
+    @Published var percentateStopProgress: Float = 1.0
+    @Published var progress: Float = 0
+    @Published var checkDuration: Int = 0
+    
     
     //Recommend Tip Props
     @Published var recommendTipTimeExist: Int = 5
@@ -30,18 +37,14 @@ class DrSmartViewModel: ObservableObject {
     var recommendTipTimer: Publishers.Autoconnect<Timer.TimerPublisher>? = nil
     
     
-    @Published var isStopProgress: Bool = true
-    @Published var percentateStopProgress: Float = 1.0
-    @Published var progress: Float = 0
-    @Published var checkDuration: Int = 0
     
+    //Data Props
     @Published var processArr = [
         Process(status: .inActive,activeIcon: "ic_linear_devices"),
         Process(status: .inActive,activeIcon: "ic_linear_router", inActiveIcon: "ic_linear_inActive_router"),
         Process(status: .inActive,activeIcon: "ic_linear_global", inActiveIcon: "ic_linear_inActive_global")
     ]
     
-    //Data Props
     @Published var recommend: Recommend? = nil
     @Published var detectedAndSolvedArr: [DetectedAndSolved] = []
     @Published var recommendsForHandlingArr: [RecommendForHandling] = []
