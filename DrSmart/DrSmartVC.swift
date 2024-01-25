@@ -44,14 +44,14 @@ class DrSmartVC: UIViewController {
 }
 
 extension DrSmartVC: DrSmartScreenDelegate {
-    func drSmartActionTracking(actionType: eDrSmartAction) {
+    func fireDrSmartActionTracking(actionType: eDrSmartAction) {
         switch actionType {
         case .recommendForHandling(let actionModel):
-            print(actionModel.actionName)
+            print("tambn DrSmartVC action tracking:  \(actionModel.actionName)")
         case .footerAction(let actionModel):
-            print(actionModel.actionName)
+            print("tambn DrSmartVC action tracking:  \(actionModel.actionName)")
         case .recommendTip(let actionModel):
-            print(actionModel.actionName)
+            print("tambn DrSmartVC action tracking:  \(actionModel.actionName)")
         }
     }
     

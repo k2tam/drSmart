@@ -18,7 +18,7 @@ enum eDrSmartAction {
 }
 
 protocol DrSmartScreenDelegate: AnyObject {
-    func drSmartActionTracking(actionType: eDrSmartAction)
+    func fireDrSmartActionTracking(actionType: eDrSmartAction)
 }
 
 struct DrSmartScreen: View {
@@ -114,25 +114,28 @@ struct DrSmartScreen: View {
                 case .runningCheck:
                     return HiFooterTwoButtons(secondaryTitle: "Huỷ quét", secondaryAction: {
                         //MARK: - Cancel check
-                        
+                        delegate?.fireDrSmartActionTracking(actionType: .footerAction(ActionModel(actionName: "Huỷ quét")))
                     }, primaryTitle: nil) {
                         
                     }
                     
                 case .resultWithoutError:
                     return HiFooterTwoButtons(primaryTitle: "Tiếp tục báo lỗi") {
-                        
+                        delegate?.fireDrSmartActionTracking(actionType: .footerAction(ActionModel(actionName: "Tiếp tục báo lỗi")))
+
                     }
                 case .resultWithErrorHandledWithoutRecommend:
                     return HiFooterTwoButtons(secondaryTitle: "Tiếp tục báo lỗi", secondaryAction: {
-                        
+                        delegate?.fireDrSmartActionTracking(actionType: .footerAction(ActionModel(actionName: "Tiếp tục báo lỗi")))
                     }, primaryTitle: "Hoàn tất") {
-                        
+                        delegate?.fireDrSmartActionTracking(actionType: .footerAction(ActionModel(actionName: "Hoàn tất®")))
+
                     }
                     
                 case .resultNoErrorWithRecommends:
                     return HiFooterTwoButtons(primaryTitle: "Cần nhân viên hỗ trợ") {
-                        
+                        delegate?.fireDrSmartActionTracking(actionType: .footerAction(ActionModel(actionName: "Cần nhân viên hỗ trợ")))
+
                     }
                 }
             }
@@ -221,7 +224,7 @@ struct DrSmartScreen: View {
                             ForEach(vm.recommendsForHandlingArr, id: \.self) { item in
                                 RecommendForHandlingView(type: item.type, title: item.title, descText: item.descText, btnText: item.btnText){
                                     if let actionModel = item.actionModel {
-                                        delegate?.drSmartActionTracking(actionType: .recommendForHandling(actionModel))
+                                        delegate?.fireDrSmartActionTracking(actionType: .recommendForHandling(actionModel))
                                     }
                                    
                                 }
@@ -251,7 +254,7 @@ struct DrSmartScreen: View {
         Group {
             if let recommend = vm.recommend  {
                     Button {
-                        delegate?.drSmartActionTracking(actionType: .recommendTip(ActionModel(actionName: "Tip View")))
+                        delegate?.fireDrSmartActionTracking(actionType: .recommendTip(ActionModel(actionName: "Tip View")))
                     } label: {
                         RecommendView(type: recommend.type, title: recommend.title, descText: recommend.body, dismissAction: vm.removeRecommendTipBySwipe)
                             .padding(.bottom, 16 + Constants.kHeightFooter1Button)
@@ -287,17 +290,7 @@ extension DrSmartScreen {
         
         //Set current state for change footer view
         self.vm.currentState = .resultWithErrorHandledWithoutRecommend
-        print(vm.isCheckingCompleted)
     }
-    
- 
-    
-   
-
-    /// Resume the checking process
-    /// - Parameters:
-    ///   - duration: seconds
-  
 }
 
 
