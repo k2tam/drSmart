@@ -8,6 +8,8 @@
 import Foundation
 import Combine
 
+
+
 enum eDrSmartState {
     case runningCheck
     case resultWithoutError
@@ -15,8 +17,12 @@ enum eDrSmartState {
     case resultNoErrorWithRecommends
 }
 
-class DrSmartViewModel: ObservableObject {
 
+
+class DrSmartViewModel: ObservableObject {
+    let processInterval: Float = 0.05
+    
+  
     @Published var isCheckingCompleted: Bool = false
     @Published var currentState: eDrSmartState = .runningCheck
     var cancelables = Set<AnyCancellable>()
@@ -47,18 +53,20 @@ class DrSmartViewModel: ObservableObject {
     @Published var recommendsForHandlingArr: [RecommendForHandling] = []
     @Published var notDetectErroArr: [NotDetectErroItem] = []
 
-    
+    var resetCallBack: (() -> Void)? = nil
+
     init() {
         self.addIsCheckingCompletedSubscriber()
         self.addRecommendSubscriber()
         self.addProgressSubscriber()
+        
     }
     
     //MARK: - Public Methods
     func runChecking(duration: Int) {
         self.stopChecking()
         self.removeStopCheckingInMiddle()
-        self.processTimer =  Timer.publish(every: 0.1, on: .main, in: .common).autoconnect()
+        self.processTimer =  Timer.publish(every: TimeInterval(processInterval), on: .main, in: .common).autoconnect()
         addProcessTimerSubscriber(duration: duration)
         
     }
@@ -121,11 +129,13 @@ class DrSmartViewModel: ObservableObject {
     
     private func addProcessTimerSubscriber(duration: Int){
         if let processTimer = self.processTimer {
-            let totalUpdateProgress: Int =  Int(Float(duration) / 0.1)
+            let totalUpdateProgress: Int =  Int(Float(duration) / processInterval)
             processTimer.sink { [weak self] _  in
                 guard let self else { return }
                 if self.progress < 1.0 {
-                    self.progress +=  1.0 / Float(totalUpdateProgress)
+                    DispatchQueue.main.async {
+                        self.progress +=  1.0 / Float(totalUpdateProgress)
+                    }
                 }else {
                     //Stop checking process
                     self.stopChecking()

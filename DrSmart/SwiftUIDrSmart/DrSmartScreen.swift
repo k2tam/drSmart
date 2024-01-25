@@ -28,6 +28,7 @@ struct DrSmartScreen: View {
     
     
     @Backport.StateObject var vm =  DrSmartViewModel()
+    
     @State private var displayProgress: Float = 0.0
     @State private var currentProcessIndex: Int = 0
     
@@ -35,6 +36,8 @@ struct DrSmartScreen: View {
     @State var navTitle: String = "Kiểm tra"
     @State var btnFooterPrimaryTitle: String? = nil
     @State var btnFooterSecondaryTitle: String? = "Huỷ quét"
+    
+    
     
     
     var body: some View {
@@ -51,7 +54,8 @@ struct DrSmartScreen: View {
                     if vm.isCheckingCompleted {
                         Button(action: {
                             self.currentProcessIndex = 0
-                            vm.cancelChecking()
+                            resetUIProcessItem()
+                            vm.resetChecking()
                             
                         }, label: {
                             HiImage(named: "ic_x_close")
@@ -70,20 +74,8 @@ struct DrSmartScreen: View {
             .onReceive(vm.$progress, perform: { returnedProgress in
                 withAnimation {
                     self.displayProgress = returnedProgress
-                    
-                    let progressPerProcess = 1.0 / Float(vm.processArr.count)
-                    
-                    if returnedProgress >=  progressPerProcess * Float((Double(currentProcessIndex) + 1.0)) {
-                        vm.processArr[currentProcessIndex].status = .active
-                        
-                        if currentProcessIndex < vm.processArr.count - 1{
-                            currentProcessIndex += 1
-                        }
-                    }
-                    
-                    if currentProcessIndex < vm.processArr.count - 1   {
-                        vm.processArr[currentProcessIndex + 1].status = .waiting
-                    }
+                    self.updateUIProcessItem(progressUpdated: returnedProgress)
+  
                 }
                 
                 
@@ -250,12 +242,42 @@ struct DrSmartScreen: View {
     }
 }
 
+
 extension DrSmartScreen {
     //MARK: - Handle On Checking Completed
     private func onFinishChecking() {
         self.navTitle = vm.isCheckingCompleted ? "Kết quả kiểm tra" : "Kiểm tra"
         //Set current state for change footer view
         self.vm.currentState = .resultWithErrorHandledWithoutRecommend
+    }
+    
+    private func updateUIProcessItem(progressUpdated: Float) {
+        if vm.progress != 0{
+            let progressPerProcess = 1.0 / Float(vm.processArr.count)
+            
+            if progressUpdated >=  progressPerProcess * Float((Double(currentProcessIndex) + 1.0)) {
+                vm.processArr[currentProcessIndex].status = .active
+                
+                if currentProcessIndex < vm.processArr.count - 1{
+                    currentProcessIndex += 1
+                }
+            }
+            
+            if currentProcessIndex < vm.processArr.count - 1   {
+                vm.processArr[currentProcessIndex + 1].status = .waiting
+            }
+        }
+    }
+    
+    private func resetUIProcessItem() {
+        for i in 0..<vm.processArr.count {
+            if i == 0 {
+                vm.processArr[0].status = .loading
+            }else {
+                vm.processArr[i].status = .inActive
+            }
+        }
+        
     }
 }
 

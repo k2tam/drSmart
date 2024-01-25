@@ -21,15 +21,15 @@ struct DrSmartProcessItem: View {
     
     var body: some View {
         ZStack {
-            if status == .waiting {
-                LottieView(name: "Scan_Small", loopMode: .loop)
-                    .frame(width: 64, height: 64)
-               
-            }else {
-                Circle()
-                    .frame(width: 64, height: 64)
-                    .foregroundColor(Color(hex: "#E5EAFF",alpha: 0.3))
-            }
+            LottieView(name: "Scan_Small", loopMode: .loop)
+                .frame(width: 64, height: 64)
+                .opacity(status == .waiting ? 1: 0)
+           
+            Circle()
+                .frame(width: 64, height: 64)
+                .foregroundColor(Color(hex: "#E5EAFF",alpha: 0.3))
+                .opacity(status == .waiting ? 0 : 1)
+            
            
             
             HiImage(named: setIconProcess(self.status))
