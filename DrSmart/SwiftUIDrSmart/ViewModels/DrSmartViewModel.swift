@@ -21,7 +21,8 @@ enum eDrSmartState {
 
 class DrSmartViewModel: ObservableObject {
     let processInterval: Float = 0.05
-    
+    var resetCallBack: (() -> Void)? = nil
+
   
     @Published var isCheckingCompleted: Bool = false
     @Published var currentState: eDrSmartState = .runningCheck
@@ -53,12 +54,12 @@ class DrSmartViewModel: ObservableObject {
     @Published var recommendsForHandlingArr: [RecommendForHandling] = []
     @Published var notDetectErroArr: [NotDetectErroItem] = []
 
-    var resetCallBack: (() -> Void)? = nil
 
     init() {
         self.addIsCheckingCompletedSubscriber()
         self.addRecommendSubscriber()
         self.addProgressSubscriber()
+    
         
     }
     
@@ -87,6 +88,7 @@ class DrSmartViewModel: ObservableObject {
     func resetChecking() {
         self.removeStopCheckingInMiddle()
         self.progress = 0
+        self.resetCallBack?()
     }
     
     //❌ Cancel checking

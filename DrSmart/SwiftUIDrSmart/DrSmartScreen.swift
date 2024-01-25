@@ -26,16 +26,18 @@ struct DrSmartScreen: View {
     var delegate: DrSmartScreenDelegate?
     @State var isCancelCheckProgress: Bool = false
     
+   
     
     @Backport.StateObject var vm =  DrSmartViewModel()
     
     @State private var displayProgress: Float = 0.0
     @State private var currentProcessIndex: Int = 0
     
-    //Navigation and footer props
+    //Navigation and footer propss
     @State var navTitle: String = "Kiểm tra"
     @State var btnFooterPrimaryTitle: String? = nil
     @State var btnFooterSecondaryTitle: String? = "Huỷ quét"
+    
     
     
     
@@ -54,7 +56,6 @@ struct DrSmartScreen: View {
                     if vm.isCheckingCompleted {
                         Button(action: {
                             self.currentProcessIndex = 0
-                            resetUIProcessItem()
                             vm.resetChecking()
                             
                         }, label: {
@@ -70,6 +71,8 @@ struct DrSmartScreen: View {
                     vm.processArr[0].status = .loading
                     
                 }
+                
+                vm.resetCallBack = self.resetUIProcessItem
             })
             .onReceive(vm.$progress, perform: { returnedProgress in
                 withAnimation {
@@ -269,7 +272,7 @@ extension DrSmartScreen {
         }
     }
     
-    private func resetUIProcessItem() {
+     func resetUIProcessItem() {
         for i in 0..<vm.processArr.count {
             if i == 0 {
                 vm.processArr[0].status = .loading
