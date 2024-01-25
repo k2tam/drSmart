@@ -31,16 +31,6 @@ struct DrSmartScreen: View {
     @State private var displayProgress: Float = 0.0
     @State private var currentProcessIndex: Int = 0
     
-    @State private var timer: Timer?
-
-    
-    //Recommend tip view props
-    let recommendTipTimer = Timer.publish(every: 1.0, on: .main, in: .common)
-    @State var recommendTipTimerCancelables = Set<AnyCancellable>()
-//    @State private var isShowRecommendTip: Bool = false
-    @State private var recommendTipDurationCount: Int = 4
-    
-    
     //Navigation and footer props
     @State var navTitle: String = "Kiểm tra"
     @State var btnFooterPrimaryTitle: String? = nil
@@ -62,7 +52,7 @@ struct DrSmartScreen: View {
                         Button(action: {
                             self.currentProcessIndex = 0
                             self.displayProgress = 0
-                            self.vm.resetProgress()
+//                            self.vm.resetProgress()
 
                         }, label: {
                             HiImage(named: "ic_x_close")
@@ -74,37 +64,31 @@ struct DrSmartScreen: View {
                 
             }
             .onAppear(perform: {
-                //Timer for recommend tip view
-                self.recommendTipTimer.connect()
-                .store(in: &recommendTipTimerCancelables)
-                
                 if !vm.isCheckingCompleted{
                     vm.processArr[0].status = .loading
 
                 }
-                
             })
-            .backport.onChange(of: self.displayProgress, perform: { progress in
-                
-                
-                let progressPerProcess = 1.0 / Float(vm.processArr.count)
- 
-                if progress >=  progressPerProcess * Float((Double(currentProcessIndex) + 1.0)) {
-                    vm.processArr[currentProcessIndex].status = .active
+            .onReceive(vm.$progress, perform: { returnedProgress in
+                withAnimation {
+                    self.displayProgress = returnedProgress
                     
-                    if currentProcessIndex < vm.processArr.count - 1{
-                        currentProcessIndex += 1
+                    let progressPerProcess = 1.0 / Float(vm.processArr.count)
+     
+                    if returnedProgress >=  progressPerProcess * Float((Double(currentProcessIndex) + 1.0)) {
+                        vm.processArr[currentProcessIndex].status = .active
+                        
+                        if currentProcessIndex < vm.processArr.count - 1{
+                            currentProcessIndex += 1
+                        }
+                    }
+                    
+                    if currentProcessIndex < vm.processArr.count - 1   {
+                        vm.processArr[currentProcessIndex + 1].status = .waiting
                     }
                 }
                 
-                if currentProcessIndex < vm.processArr.count - 1   {
-                    vm.processArr[currentProcessIndex + 1].status = .waiting
-                }
-            })
-            .onReceive(vm.$progress, perform: { value in
-                withAnimation {
-                    self.displayProgress = value
-                }
+                
                 
             })
             
@@ -114,6 +98,7 @@ struct DrSmartScreen: View {
                 case .runningCheck:
                     return HiFooterTwoButtons(secondaryTitle: "Huỷ quét", secondaryAction: {
                         //MARK: - Cancel check
+                        vm.cancelChecking()
                         delegate?.fireDrSmartActionTracking(actionType: .footerAction(ActionModel(actionName: "Huỷ quét")))
                     }, primaryTitle: nil) {
                         
@@ -159,29 +144,26 @@ struct DrSmartScreen: View {
                 HStack(spacing: 32) {
                     
                     Button(action: {
-                        self.vm.runProcessWithDuration(duration: 1)
-
+                        self.vm.runChecking(duration: 1)
                     }, label: {
                         Text("Rush")
                     })
                     
                     Button(action: {
-                        vm.percentateStopProgress = 0.6
-                        
-                        self.vm.runProcessWithDuration(duration: 10)
+                        self.vm.runCheckingTo(percentage: 0.6, duration: 4)
 
                     }, label: {
-                        Text("Stop %")
+                        Text("Run to %")
                     })
                     
                     Button {
-                        vm.isStopProgress = true
+                        vm.stopChecking()
                     } label: {
                         Text("Stop")
                     }
                     
                     Button {
-                        self.vm.runProcessWithDuration(duration: 5)
+                        self.vm.runChecking(duration: vm.checkingDuration)
 
                     } label: {
                         Text("Run check")
@@ -266,10 +248,7 @@ struct DrSmartScreen: View {
        
     }
 
-    private func runChecking() {
-        self.vm.isStopProgress.toggle()
-        
-    }
+  
     
   
     

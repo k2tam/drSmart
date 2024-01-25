@@ -23,19 +23,17 @@ class DrSmartViewModel: ObservableObject {
     
     //Progress Props
     private var processTimerSubscription = Set<AnyCancellable>()
-    let processTimer = Timer.publish(every: 0.1, on: .main, in: .common).autoconnect()
+    var processTimer: Publishers.Autoconnect<Timer.TimerPublisher>? = nil
     
-    @Published var isStopProgress: Bool = true
-    @Published var percentateStopProgress: Float = 1.0
+    @Published var percentageStopCheckingInMiddle: Float? = nil
     @Published var progress: Float = 0
-    @Published var checkDuration: Int = 0
+    @Published var checkingDuration: Int = 5
     
     
     //Recommend Tip Props
     @Published var recommendTipTimeExist: Int = 5
     private var recommendTipTimerSubscription = Set<AnyCancellable>()
     var recommendTipTimer: Publishers.Autoconnect<Timer.TimerPublisher>? = nil
-    
     
     
     //Data Props
@@ -77,18 +75,17 @@ class DrSmartViewModel: ObservableObject {
     
     init() {
         self.addIsCheckingCompletedSubscriber()
-        self.addProcessTimerSubscriber()
-        self.addIsStopProgressSubscriber()
+        self.addProcessTimerSubscriber(duration: 5)
+//        self.addIsStopProgressSubscriber()
         self.addRecommendSubscriber()
+        self.addProgressSubscriber()
     }
     
     
     func addIsCheckingCompletedSubscriber() {
         $isCheckingCompleted
             .sink {[weak self]  returnedIsCheckingCompleted in
-                guard let self = self else {
-                    return
-                }
+                guard let self else {return}
                     if returnedIsCheckingCompleted {
                         //Available content
                         self.detectedAndSolvedArr = self.sampleDetectedAndSolvedArr
@@ -108,95 +105,76 @@ class DrSmartViewModel: ObservableObject {
             }
             .store(in: &cancelables)
     }
-    
-   
-    
-   
-    private func addProcessTimerSubscriber(){
-        processTimer.sink { value  in
-            if !self.isStopProgress  {
-                
-                let totalUpdates: Int = Int(Double(self.checkDuration) / 0.1)
-                if self.progress < 1.0 {
-                    
-                    if self.progress >= self.percentateStopProgress {
-                        self.stopProgress()
-                    }else{
-                        self.progress += 1.0 / Float(totalUpdates)
-                        
-                    }
-  
-                }else {
-                    self.stopProgress()
-                }
 
-            }
-        }
-        .store(in: &processTimerSubscription)
-    }
     
-    func resetProgress() {
-        self.isCheckingCompleted = false
-        self.progress = 0
-        self.isStopProgress = true
-        self.percentateStopProgress = 1.0
-        self.checkDuration = 0
-        self.currentState = .runningCheck
+    func runChecking(duration: Int) {
+        self.processTimer =  Timer.publish(every: 0.1, on: .main, in: .common).autoconnect()
+        addProcessTimerSubscriber(duration: duration)
         
-        for i in 0..<self.processArr.count {
-            if i == 0 {
-                self.processArr[0].status = .loading
-
-            }else {
-                self.processArr[i].status = .inActive
-
-            }
-            
-        }
     }
     
-    func stopProgress() {
-        self.isStopProgress = true
+    func runCheckingTo(percentage: Float, duration: Int){
+        runChecking(duration: duration)
+        self.percentageStopCheckingInMiddle = percentage
+    }
+    
+    func stopChecking() {
+        processTimerSubscription.forEach { $0.cancel() }
+    }
+    
+    func resetChecking() {
+        self.progress = 0
+    }
+    
+    func cancelChecking() {
+        stopChecking()
+        resetChecking()
+    }
+    
+    
+    private func addProcessTimerSubscriber(duration: Int){
+        if let processTimer = self.processTimer {
+            let totalUpdateProgress: Int =  Int(Float(duration) / 0.1)
+            processTimer.sink { [weak self] _  in
+                guard let self else { return }
+                if self.progress < 1.0 {
+                    self.progress +=  1.0 / Float(totalUpdateProgress)
+                }else {
+                    //Stop checking process
+                    self.stopChecking()
+                }
+            }
+            .store(in: &processTimerSubscription)
+        }else {
+            return
+        }
      
     }
     
-    func runProcessWithDuration(duration: Int){
-        
-        self.isStopProgress = false
-        self.checkDuration = duration
-        
-
-    }
-    
-    func killProcessTimer(){
-        self.processTimerSubscription.forEach { cancelable in
-            cancelable.cancel()
-        }
-    }
-    
-    func addIsStopProgressSubscriber() {
-        $isStopProgress
-            .sink { [weak self]  returnedIsStopProgress in
+    private func addProgressSubscriber() {
+        $progress
+            .sink { [weak self] returnProgress in
                 guard let self else {return}
-                if returnedIsStopProgress {
-                    if self.progress >= 1.0 {
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){
-                            
-                            self.isCheckingCompleted = true
-                        }
-
-                    }else if self.progress >= self.percentateStopProgress {
-                        self.percentateStopProgress = 1.0
-
+                if returnProgress >= 1.0 {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){
+                        self.isCheckingCompleted = true
                     }
-                }else {
-                    
+                }else if self.percentageStopCheckingInMiddle != nil {
+                    if returnProgress >= self.percentageStopCheckingInMiddle!  {
+                        stopChecking()
+                        self.percentageStopCheckingInMiddle = nil
+                    }
+                }
+                else {
+                    self.isCheckingCompleted = false
                 }
             }
             .store(in: &cancelables)
-        
     }
+    
+  
 }
+
 
 
 
