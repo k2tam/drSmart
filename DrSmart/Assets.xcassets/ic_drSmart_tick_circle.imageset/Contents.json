@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "ic_drSmart_tick_circle.svg",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "ic_linear_disable_global.svg",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

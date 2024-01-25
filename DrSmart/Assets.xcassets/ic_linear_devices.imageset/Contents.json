@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "ic_linear_devices.svg",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}
