@@ -38,6 +38,8 @@ struct RecommendForHandlingView: View {
                         .font(.system(size: 16))
                         .foregroundColor(Color.hiPrimaryText)
                         .lineLimit(3)
+                        .fixedSize(horizontal: false, vertical: true)
+                     
                         .multilineTextAlignment(.leading)
                     
                     Spacer()
@@ -51,13 +53,15 @@ struct RecommendForHandlingView: View {
                     Button(action: {
                         withAnimation {
                             self.isExpandDesc.toggle()
-                            
                         }
+                        
                     }, label: {
                         HStack(spacing: 0) {
                             Text(title)
                                 .font(.system(size: 16, weight: .medium))
+                                .fixedSize(horizontal: false, vertical: true)
                                 .lineLimit(3)
+                                
                                 .multilineTextAlignment(.leading)
                             
                             Spacer()
@@ -69,6 +73,7 @@ struct RecommendForHandlingView: View {
                         }
                         .foregroundColor(.black)
                     })
+                    .buttonStyle(PlainButtonStyle())
                     
                 }
 
@@ -82,6 +87,7 @@ struct RecommendForHandlingView: View {
                         .foregroundColor(Color.hiSecondaryText)
                         .multilineTextAlignment(.leading)
                         .frame(maxWidth: .infinity)
+                        .fixedSize(horizontal: false, vertical: /*@START_MENU_TOKEN@*/true/*@END_MENU_TOKEN@*/)
                 }
             }
             

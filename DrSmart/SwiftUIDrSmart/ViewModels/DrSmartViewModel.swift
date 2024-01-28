@@ -38,7 +38,7 @@ class DrSmartViewModel: ObservableObject {
     
     
     //Recommend Tip Props
-    @Published var recommendTipTimeExist: Int = 5
+    @Published var recommendTipTimeExist: Int = 100
     private var recommendTipTimerSubscription = Set<AnyCancellable>()
     var recommendTipTimer: Publishers.Autoconnect<Timer.TimerPublisher>? = nil
     

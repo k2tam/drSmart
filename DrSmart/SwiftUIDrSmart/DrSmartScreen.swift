@@ -26,8 +26,6 @@ struct DrSmartScreen: View {
     var delegate: DrSmartScreenDelegate?
     @State var isCancelCheckProgress: Bool = false
     
-   
-    
     @Backport.StateObject var vm =  DrSmartViewModel()
     
     @State private var displayProgress: Float = 0.0
@@ -37,11 +35,7 @@ struct DrSmartScreen: View {
     @State var navTitle: String = "Kiểm tra"
     @State var btnFooterPrimaryTitle: String? = nil
     @State var btnFooterSecondaryTitle: String? = "Huỷ quét"
-    
-    
-    
-    
-    
+
     var body: some View {
         NavigationView {
             HiNavigationView {
@@ -50,10 +44,10 @@ struct DrSmartScreen: View {
                     contentView
                     recommendTipView
                 }
-                .hiNavigationTitle(self.navTitle)
+                .hiNavigationTitle(vm.isCheckingCompleted ? "Kết quả kiểm tra" : "Kiểm tra")
                 .hiNavButtonHidden(vm.isCheckingCompleted)
                 .hiNavBarTrailingView {
-                    if vm.isCheckingCompleted {
+                    
                         Button(action: {
                             self.currentProcessIndex = 0
                             vm.resetChecking()
@@ -62,7 +56,8 @@ struct DrSmartScreen: View {
                             HiImage(named: "ic_x_close")
                                 .frame(width: 24, height: 24)
                         })
-                    }
+                        .opacity(vm.isCheckingCompleted ? 1 : 0)
+                    
                     
                 }
             }
@@ -80,9 +75,6 @@ struct DrSmartScreen: View {
                     self.updateUIProcessItem(progressUpdated: returnedProgress)
   
                 }
-                
-                
-                
             })
             .hiFooter {
                 switch vm.currentState {
@@ -231,14 +223,9 @@ struct DrSmartScreen: View {
     private var recommendTipView: some View {
         Group {
             if let recommend = vm.recommend  {
-                Button {
-                    delegate?.fireDrSmartActionTracking(actionType: .recommendTip(ActionModel(actionName: "Tip View")))
-                } label: {
-                    RecommendView(type: recommend.type, title: recommend.title, descText: recommend.body, dismissAction: vm.removeRecommendTipBySwipe)
-                        .padding(.bottom, 16 + Constants.kHeightFooter1Button)
-                        .padding(.horizontal, 16)
-                }
-                 
+                RecommendView(type: recommend.type, title: recommend.title, descText: recommend.body, dismissAction: vm.removeRecommendTipBySwipe)
+                    .padding(.bottom, 16 + Constants.kHeightFooter1Button)
+                    .padding(.horizontal, 16)
             }
         }
         
@@ -249,7 +236,6 @@ struct DrSmartScreen: View {
 extension DrSmartScreen {
     //MARK: - Handle On Checking Completed
     private func onFinishChecking() {
-        self.navTitle = vm.isCheckingCompleted ? "Kết quả kiểm tra" : "Kiểm tra"
         //Set current state for change footer view
         self.vm.currentState = .resultWithErrorHandledWithoutRecommend
     }

@@ -118,6 +118,7 @@ extension HiNavigationBarView {
     private var backButton: some View {
         Button(action: {
             presentationMode.wrappedValue.dismiss()
+            
         }, label: {
             HiImage(named: self.navButton)
                 .aspectRatio(contentMode: .fit)

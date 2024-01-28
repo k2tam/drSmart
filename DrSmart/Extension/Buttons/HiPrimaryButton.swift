@@ -7,7 +7,14 @@
 
 import SwiftUI
 
+struct UnEffectButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+    }
+}
+
 struct HiPrimaryButton: View {
+    var tapEffect: Bool = true
     var text: String
     var isEnable: Bool = true
     var onClick: () -> Void
@@ -33,6 +40,21 @@ struct HiPrimaryButton: View {
                     .clipShape(RoundedRectangle(cornerRadius: 8))
             }
             .disabled(!isEnable)
+            .setEffectButtonStyle(tapEffect)
+
+
+        }
+    }
+}
+
+extension View {
+    @ViewBuilder
+    func setEffectButtonStyle(_ tapEffect: Bool) -> some View {
+        if tapEffect {
+            self
+        }else{
+            self
+                .buttonStyle(UnEffectButtonStyle())
         }
     }
 }

@@ -7,11 +7,14 @@
 
 import SwiftUI
 
+
+
 struct HiSecondaryButton: View {
+    var tapEffect: Bool = true
     var text: String
     var isEnable: Bool = false
     var onClick: () -> Void
-    
+
     let enableColor = Color.hiBlueContainer
     let disableColor = Color.hi767676.opacity(0.5)
     var body: some View {
@@ -26,10 +29,14 @@ struct HiSecondaryButton: View {
                 .font(.system(size: 14, weight: .semibold))
                 .foregroundColor(isEnable ? Color.hiPrimary : Color.white)
                 .background(isEnable ? enableColor : disableColor)
-                .clipShape(RoundedRectangle(cornerRadius: 8))
-        }
+                .clipShape(RoundedRectangle(cornerRadius: 8))        
 
+        }
         .disabled(!isEnable)
+        .setEffectButtonStyle(tapEffect)
+
     }
 }
+
+
 
